@@ -1,15 +1,509 @@
 <!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Я люблю тебя, Родная</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <main class="wrap" role="main">
-      <div class="heart" aria-hidden="true"></div>
-      <h1 class="message">Я люблю тебя, родная моя Настя! Целую</h1>
-    </main>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Alex Volkov — C++ Software Engineer</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+</head>
+<body>
+
+<!-- ───────── NAVIGATION ───────── -->
+<nav class="navbar" id="navbar">
+  <a href="#hero" class="nav-logo">&lt;AV/&gt;</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+</nav>
+
+<!-- ───────── HERO ───────── -->
+<section class="hero" id="hero">
+  <div class="hero-bg-code" aria-hidden="true">
+    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+template&lt;typename T&gt;
+concept Sortable = requires(T a) {
+    { a &lt; a } -&gt; std::convertible_to&lt;bool&gt;;
+};
+
+int main() {
+    std::vector&lt;int&gt; v{5, 3, 1, 4, 2};
+    std::ranges::sort(v);
+    for (auto&amp; x : v)
+        std::cout &lt;&lt; x &lt;&lt; ' ';
+}</code></pre>
+  </div>
+  <div class="hero-content">
+    <p class="hero-greeting">Hello, I'm</p>
+    <h1 class="hero-name">Alex Volkov</h1>
+    <h2 class="hero-title">C++ Software Engineer</h2>
+    <p class="hero-tagline">Building high-performance systems with modern C++20/23.<br/>Passionate about low-latency, concurrency &amp; game engines.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+    <div class="hero-socials">
+      <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="#" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── ABOUT ───────── -->
+<section class="section" id="about">
+  <div class="container">
+    <h2 class="section-title">About Me</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a systems-level software engineer with <strong>8+ years</strong> of professional experience writing
+        high-performance C++ across domains like real-time simulation, game engines, networking, and financial systems.</p>
+        <p>I specialise in <em>modern C++ (17/20/23)</em>, template metaprogramming, concurrent data structures, and
+        cross-platform development on Linux and Windows.</p>
+        <p>When I'm not coding, I contribute to open-source tools and mentor junior developers in systems programming.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <span class="stat-number" data-target="8">0</span>
+          <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="35">0</span>
+          <span class="stat-label">Projects Delivered</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="12">0</span>
+          <span class="stat-label">Open-Source Repos</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="500">0</span>
+          <span class="stat-label">GitHub Stars</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── SKILLS ───────── -->
+<section class="section section-alt" id="skills">
+  <div class="container">
+    <h2 class="section-title">Technical Skills</h2>
+    <div class="skills-grid">
+
+      <div class="skill-category">
+        <h3><i class="fa-solid fa-code"></i> Languages</h3>
+        <div class="tags">
+          <span class="tag tag-primary">C++17/20/23</span>
+          <span class="tag">C</span>
+          <span class="tag">Python</span>
+          <span class="tag">Rust</span>
+          <span class="tag">x86 Assembly</span>
+          <span class="tag">GLSL / HLSL</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3><i class="fa-solid fa-cubes"></i> Libraries &amp; Frameworks</h3>
+        <div class="tags">
+          <span class="tag tag-primary">Boost</span>
+          <span class="tag tag-primary">STL</span>
+          <span class="tag">Qt 6</span>
+          <span class="tag">OpenGL / Vulkan</span>
+          <span class="tag">gRPC / Protobuf</span>
+          <span class="tag">Catch2 / GTest</span>
+          <span class="tag">ImGui</span>
+          <span class="tag">Eigen</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3><i class="fa-solid fa-gears"></i> Tools &amp; Platforms</h3>
+        <div class="tags">
+          <span class="tag">CMake</span>
+          <span class="tag">Conan / vcpkg</span>
+          <span class="tag">GCC / Clang / MSVC</span>
+          <span class="tag">GDB / Valgrind</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Git</span>
+          <span class="tag">CI/CD (GitHub Actions)</span>
+          <span class="tag">Linux / Windows</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3><i class="fa-solid fa-brain"></i> Domains</h3>
+        <div class="tags">
+          <span class="tag">Multithreading &amp; Lock-free</span>
+          <span class="tag">Game Engines</span>
+          <span class="tag">Real-time Systems</span>
+          <span class="tag">Networking (TCP/UDP)</span>
+          <span class="tag">Template Metaprogramming</span>
+          <span class="tag">Performance Optimisation</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ───────── EXPERIENCE ───────── -->
+<section class="section" id="experience">
+  <div class="container">
+    <h2 class="section-title">Work Experience</h2>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">Jan 2022 — Present</span>
+          <h3>Senior C++ Developer</h3>
+          <h4>Acme Simulations</h4>
+          <ul>
+            <li>Lead architect of a real-time physics simulation engine written in C++20 with coroutines and modules.</li>
+            <li>Designed a plugin system using concepts and CRTP, reducing boilerplate by 40%.</li>
+            <li>Achieved &lt;1 ms frame budget on data sets of 1M+ particles using SIMD and custom allocators.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">Jun 2018 — Dec 2021</span>
+          <h3>Software Engineer</h3>
+          <h4>BetaSoft Networking</h4>
+          <ul>
+            <li>Built an async networking stack on Boost.Asio handling 100K+ concurrent connections.</li>
+            <li>Migrated legacy C++11 codebase to C++17 with structured bindings, std::optional and std::variant.</li>
+            <li>Introduced ASAN / TSAN into CI pipeline, cutting memory bugs by 90%.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">Sep 2016 — May 2018</span>
+          <h3>Junior Developer</h3>
+          <h4>GameForge Studios</h4>
+          <ul>
+            <li>Contributed to a cross-platform game engine renderer using OpenGL 4.5 and GLSL.</li>
+            <li>Implemented ECS architecture for entity management, improving iteration speed 5x.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ───────── PROJECTS ───────── -->
+<section class="section section-alt" id="projects">
+  <div class="container">
+    <h2 class="section-title">Featured Projects</h2>
+    <div class="projects-grid">
+
+      <div class="project-card" onclick="openModal('modal-engine')">
+        <div class="project-icon"><i class="fa-solid fa-gamepad"></i></div>
+        <h3>Nexus Engine</h3>
+        <p>Cross-platform 3D game engine built from scratch in modern C++20 with Vulkan rendering.</p>
+        <span class="project-more">View Details →</span>
+      </div>
+
+      <div class="project-card" onclick="openModal('modal-concurrency')">
+        <div class="project-icon"><i class="fa-solid fa-bolt"></i></div>
+        <h3>libconcur</h3>
+        <p>Header-only concurrency library with lock-free queues, task schedulers, and thread pools.</p>
+        <span class="project-more">View Details →</span>
+      </div>
+
+      <div class="project-card" onclick="openModal('modal-network')">
+        <div class="project-icon"><i class="fa-solid fa-network-wired"></i></div>
+        <h3>NetStack</h3>
+        <p>High-performance async TCP/UDP networking library with zero-copy buffers.</p>
+        <span class="project-more">View Details →</span>
+      </div>
+
+      <div class="project-card" onclick="openModal('modal-compiler')">
+        <div class="project-icon"><i class="fa-solid fa-terminal"></i></div>
+        <h3>MiniLang Compiler</h3>
+        <p>A toy language compiler targeting x86-64 with lexer, parser, AST, and code generation in C++.</p>
+        <span class="project-more">View Details →</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ───────── PROJECT MODALS ───────── -->
+
+<div class="modal-overlay" id="modal-engine">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-engine')">&times;</button>
+    <h2><i class="fa-solid fa-gamepad"></i> Nexus Engine</h2>
+    <div class="modal-body">
+      <p><strong>Tech Stack:</strong> C++20, Vulkan 1.3, GLFW, GLM, ImGui, CMake</p>
+      <p>Nexus is a modular 3D engine with a deferred rendering pipeline, PBR materials, cascaded shadow maps,
+      and a custom ECS. It compiles on Linux, Windows, and macOS.</p>
+      <h4>Key Features</h4>
+      <ul>
+        <li>Modular architecture — renderer, physics, audio, scripting as swappable modules.</li>
+        <li>Custom memory allocators with pool / stack / linear strategies.</li>
+        <li>Live shader hot-reload via file-watcher thread.</li>
+        <li>Scene graph + frustum culling with spatial hashing.</li>
+      </ul>
+      <h4>Code Snippet — ECS Query</h4>
+      <pre><code>auto view = registry.view&lt;Transform, Mesh, Material&gt;();
+for (auto [entity, tf, mesh, mat] : view.each()) {
+    renderer.submit(mesh, mat, tf.model_matrix());
+}</code></pre>
+      <div class="modal-links">
+        <a href="#" class="btn btn-small"><i class="fa-brands fa-github"></i> Source Code</a>
+        <a href="#" class="btn btn-small btn-outline"><i class="fa-solid fa-play"></i> Live Demo</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-concurrency">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-concurrency')">&times;</button>
+    <h2><i class="fa-solid fa-bolt"></i> libconcur</h2>
+    <div class="modal-body">
+      <p><strong>Tech Stack:</strong> C++20, std::atomic, std::jthread, Catch2</p>
+      <p>A lightweight, header-only concurrency library providing production-grade primitives
+      for high-throughput, low-latency applications.</p>
+      <h4>Components</h4>
+      <ul>
+        <li><strong>MPMC Queue</strong> — lock-free bounded queue using atomic CAS operations.</li>
+        <li><strong>Thread Pool</strong> — work-stealing scheduler with configurable workers.</li>
+        <li><strong>Async Task</strong> — coroutine-based task abstraction with co_await support.</li>
+        <li><strong>Spinlock / SeqLock</strong> — low-latency synchronization primitives.</li>
+      </ul>
+      <h4>Benchmark</h4>
+      <pre><code>// 10M enqueue/dequeue ops — 4 producers, 4 consumers
+libconcur::mpmc_queue&lt;int, 1024&gt;  → 42 ns/op
+std::mutex + std::queue           → 310 ns/op
+boost::lockfree::queue            → 68 ns/op</code></pre>
+      <div class="modal-links">
+        <a href="#" class="btn btn-small"><i class="fa-brands fa-github"></i> Source Code</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-network">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-network')">&times;</button>
+    <h2><i class="fa-solid fa-network-wired"></i> NetStack</h2>
+    <div class="modal-body">
+      <p><strong>Tech Stack:</strong> C++17, Boost.Asio, io_uring, Protobuf</p>
+      <p>A cross-platform async networking library designed for game servers and microservices,
+      handling 100K+ concurrent connections with minimal allocations.</p>
+      <h4>Architecture</h4>
+      <ul>
+        <li>Event-driven I/O with proactor pattern on Linux (io_uring) and Windows (IOCP).</li>
+        <li>Zero-copy buffer chain with scatter/gather I/O.</li>
+        <li>Built-in TLS support via OpenSSL integration.</li>
+        <li>Protocol codec layer for Protobuf, MsgPack, and raw binary.</li>
+      </ul>
+      <h4>Usage</h4>
+      <pre><code>net::server srv("0.0.0.0", 8080);
+srv.on_connect([](auto&amp; session) {
+    session.read_async([](auto buf) {
+        std::cout &lt;&lt; "Received: " &lt;&lt; buf.size() &lt;&lt; " bytes\n";
+    });
+});
+srv.run();</code></pre>
+      <div class="modal-links">
+        <a href="#" class="btn btn-small"><i class="fa-brands fa-github"></i> Source Code</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-compiler">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-compiler')">&times;</button>
+    <h2><i class="fa-solid fa-terminal"></i> MiniLang Compiler</h2>
+    <div class="modal-body">
+      <p><strong>Tech Stack:</strong> C++20, LLVM, Flex/Bison</p>
+      <p>An educational compiler for a toy language "MiniLang" that compiles to native x86-64 via LLVM.
+      Features a hand-written recursive descent parser alongside a Bison-generated variant.</p>
+      <h4>Pipeline</h4>
+      <ul>
+        <li><strong>Lexer</strong> — tokenizes source using DFA with Unicode support.</li>
+        <li><strong>Parser</strong> — recursive descent producing a typed AST.</li>
+        <li><strong>Semantic Analysis</strong> — type checking, scope resolution.</li>
+        <li><strong>LLVM IR Gen</strong> — emits IR, LLVM handles optimisation and codegen.</li>
+      </ul>
+      <h4>Example</h4>
+      <pre><code>fn fib(n: int) -&gt; int {
+    if n &lt;= 1 { return n; }
+    return fib(n - 1) + fib(n - 2);
+}
+print(fib(30)); // 832040</code></pre>
+      <div class="modal-links">
+        <a href="#" class="btn btn-small"><i class="fa-brands fa-github"></i> Source Code</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────── EDUCATION ───────── -->
+<section class="section" id="education">
+  <div class="container">
+    <h2 class="section-title">Education</h2>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <div class="edu-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>M.Sc. Computer Science</h3>
+        <p>Moscow Institute of Technology</p>
+        <span class="edu-year">2014 — 2016</span>
+        <p class="edu-detail">Focus: High-Performance Computing &amp; Parallel Algorithms</p>
+      </div>
+      <div class="edu-card">
+        <div class="edu-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>B.Eng. Software Engineering</h3>
+        <p>State Technical University</p>
+        <span class="edu-year">2010 — 2014</span>
+        <p class="edu-detail">Dean's List — GPA 3.9/4.0</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── CONTACT ───────── -->
+<section class="section section-alt" id="contact">
+  <div class="container">
+    <h2 class="section-title">Get in Touch</h2>
+    <div class="contact-grid">
+      <a href="mailto:alex@example.com" class="contact-card">
+        <i class="fa-solid fa-envelope"></i>
+        <span>alex@example.com</span>
+      </a>
+      <a href="#" class="contact-card">
+        <i class="fa-brands fa-github"></i>
+        <span>github.com/alexvolkov</span>
+      </a>
+      <a href="#" class="contact-card">
+        <i class="fa-brands fa-linkedin"></i>
+        <span>linkedin.com/in/alexvolkov</span>
+      </a>
+      <a href="#" class="contact-card">
+        <i class="fa-brands fa-telegram"></i>
+        <span>@alexvolkov</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── FOOTER ───────── -->
+<footer class="footer">
+  <p>&copy; 2026 Alex Volkov. Built with pure HTML, CSS &amp; JS.</p>
+</footer>
+
+<!-- ───────── JAVASCRIPT ───────── -->
+<script>
+/* ── Mobile nav toggle ── */
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.querySelector('.nav-links');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a =>
+  a.addEventListener('click', () => navLinks.classList.remove('open'))
+);
+
+/* ── Sticky navbar background ── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ── Modal open / close ── */
+function openModal(id) {
+  const m = document.getElementById(id);
+  m.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  m.classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => {
+      m.classList.remove('active');
+    });
+    document.body.style.overflow = '';
+  }
+});
+
+/* ── Stat counter animation ── */
+const counters = document.querySelectorAll('.stat-number');
+const observerOpts = { threshold: 0.6 };
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = +el.dataset.target;
+    const duration = 1500;
+    const start = performance.now();
+    const step = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      el.textContent = Math.floor(progress * target);
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target + '+';
+    };
+    requestAnimationFrame(step);
+    counterObserver.unobserve(el);
+  });
+}, observerOpts);
+counters.forEach(c => counterObserver.observe(c));
+
+/* ── Scroll-reveal for sections ── */
+const revealEls = document.querySelectorAll('.section, .timeline-item, .project-card, .edu-card, .contact-card');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => {
+  el.classList.add('reveal');
+  revealObserver.observe(el);
+});
+
+/* ── Smooth scroll ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;       // skip placeholder links
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
 </html>
