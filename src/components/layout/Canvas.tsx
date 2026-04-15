@@ -47,9 +47,22 @@ export function Canvas() {
   }, [selectNode, selectEdge]);
 
   const blockColor = activeTab.isSandbox ? '#f0f9ff' : '#f8fafc';
+  const renderedEdges = useMemo(
+    () => activeTab.edges.map((edge) => ({
+      ...edge,
+      selectable: true,
+      focusable: true,
+      interactionWidth: (edge as any).interactionWidth ?? 32,
+    })),
+    [activeTab.edges],
+  );
+
   const defaultEdgeOptions = {
     type: 'smoothstep' as const,
     animated: false,
+    selectable: true,
+    focusable: true,
+    interactionWidth: 32,
     style: { stroke: '#334155', strokeWidth: 1.6 },
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -63,15 +76,21 @@ export function Canvas() {
     <div style={{ width: '100%', height: '100%', backgroundColor: blockColor }}>
       <ReactFlow
         nodes={activeTab.nodes}
-        edges={activeTab.edges}
+        edges={renderedEdges}
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onConnect={handleConnect}
         onSelectionChange={handleSelectionChange}
         onNodeClick={handleNodeClick}
         onEdgeClick={handleEdgeClick}
+        onPaneClick={() => {
+          selectNode(null);
+          selectEdge(null);
+        }}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
+        elementsSelectable
+        edgesFocusable
         selectionOnDrag
         selectionMode={SelectionMode.Partial}
         multiSelectionKeyCode={['Control', 'Meta']}
