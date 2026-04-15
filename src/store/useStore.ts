@@ -32,6 +32,7 @@ interface FlowStore {
   updateEdgeProperty: (edgeId: string, property: string, value: any) => void;
   deleteEdge: (edgeId: string) => void;
   reverseEdge: (edgeId: string) => void;
+  reconnectEdge: (edgeId: string, connection: Connection) => void;
 }
 
 const initialSandbox: Tab = {
@@ -275,6 +276,26 @@ export const useStore = create<FlowStore>((set) => ({
       };
 
       return updatedEdge;
+    });
+
+    return {
+      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
+    };
+  }),
+  reconnectEdge: (edgeId, connection) => set((state) => {
+    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+    if (!activeTab) return state;
+
+    const updatedEdges = activeTab.edges.map((edge) => {
+      if (edge.id !== edgeId) return edge;
+
+      return {
+        ...edge,
+        source: connection.source ?? edge.source,
+        target: connection.target ?? edge.target,
+        sourceHandle: connection.sourceHandle ?? undefined,
+        targetHandle: connection.targetHandle ?? undefined,
+      };
     });
 
     return {
