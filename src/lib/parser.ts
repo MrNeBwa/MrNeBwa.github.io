@@ -177,6 +177,29 @@ function parseStatements(tokens: string[]): Statement[] {
     const cases: Array<{ label: string; body: Statement[] }> = [];
     let defaultBody: Statement[] = [];
 
+    const parseInlineStatements = (inline: string): Statement[] => {
+      const cleaned = inline.trim();
+      if (!cleaned) return [];
+      const inlineTokens = splitToTokens([cleaned]);
+      return parseStatements(inlineTokens);
+    };
+
+    const extractCaseLabelAndTail = (token: string): { label: string; tail: string } => {
+      const match = token.match(/^case\s+(.+):\s*(.*)$/);
+      if (!match) {
+        return { label: token.replace(/^case\s+/, '').trim(), tail: '' };
+      }
+      return {
+        label: (match[1] || '').trim(),
+        tail: (match[2] || '').trim(),
+      };
+    };
+
+    const extractDefaultTail = (token: string): string => {
+      const match = token.match(/^default\s*:\s*(.*)$/);
+      return (match?.[1] || '').trim();
+    };
+
     if (tokens[index] === '{') {
       index += 1;
     }
@@ -185,9 +208,9 @@ function parseStatements(tokens: string[]): Statement[] {
       const token = tokens[index];
 
       if (isCaseToken(token)) {
-        const label = token.replace(/^case\s+/, '').replace(/:$/, '').trim();
+        const { label, tail } = extractCaseLabelAndTail(token);
         index += 1;
-        const body: Statement[] = [];
+        const body: Statement[] = [...parseInlineStatements(tail)];
 
         while (
           index < tokens.length
@@ -204,8 +227,9 @@ function parseStatements(tokens: string[]): Statement[] {
       }
 
       if (isDefaultToken(token)) {
+        const tail = extractDefaultTail(token);
         index += 1;
-        const body: Statement[] = [];
+        const body: Statement[] = [...parseInlineStatements(tail)];
         while (
           index < tokens.length
           && tokens[index] !== '}'
