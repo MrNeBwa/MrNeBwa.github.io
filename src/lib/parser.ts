@@ -117,6 +117,16 @@ function formatDeclarationLabel(token: string): string {
   return cleaned;
 }
 
+function isInitializerAssignmentToken(token: string): boolean {
+  const cleaned = token.replace(/\s+/g, ' ').trim();
+  return /[\w\]\)>:]\s*=\s*$/.test(cleaned);
+}
+
+function formatInitializerAssignmentLabel(token: string): string {
+  const cleaned = token.replace(/\s+/g, ' ').trim();
+  return `${cleaned} { ... }`;
+}
+
 function parseStatements(tokens: string[]): Statement[] {
   let index = 0;
 
@@ -231,6 +241,24 @@ function parseStatements(tokens: string[]): Statement[] {
       return { kind: 'action', text: declarationLabel };
     }
 
+    if (isInitializerAssignmentToken(token) && tokens[index + 1] === '{') {
+      const label = formatInitializerAssignmentLabel(token);
+      index += 2;
+      let depth = 1;
+
+      while (index < tokens.length && depth > 0) {
+        if (tokens[index] === '{') depth += 1;
+        else if (tokens[index] === '}') depth -= 1;
+        index += 1;
+      }
+
+      if (tokens[index] === ';') {
+        index += 1;
+      }
+
+      return { kind: 'action', text: label };
+    }
+
     if (isIfToken(token)) {
       const condition = token;
       index += 1;
@@ -279,6 +307,10 @@ function parseStatements(tokens: string[]): Statement[] {
     index += 1;
 
     if (!cleanedAction || /^[,:;]+$/.test(cleanedAction)) {
+      return null;
+    }
+
+    if (/^".*"\s*,?\s*$/.test(cleanedAction) || /^[\w:]+\s*,\s*$/.test(cleanedAction)) {
       return null;
     }
 
