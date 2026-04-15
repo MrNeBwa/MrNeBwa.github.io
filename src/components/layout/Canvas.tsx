@@ -27,11 +27,13 @@ export function Canvas() {
   const handleConnect = (connection: Connection) => onConnectActiveTab(connection);
 
   const handleNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
+    _event.stopPropagation();
     selectNode(node.id);
     selectEdge(null);
   }, [selectNode, selectEdge]);
 
   const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge) => {
+    _event.stopPropagation();
     selectEdge(edge.id);
     selectNode(null);
   }, [selectNode, selectEdge]);
@@ -83,10 +85,6 @@ export function Canvas() {
         onSelectionChange={handleSelectionChange}
         onNodeClick={handleNodeClick}
         onEdgeClick={handleEdgeClick}
-        onPaneClick={() => {
-          selectNode(null);
-          selectEdge(null);
-        }}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
         elementsSelectable
