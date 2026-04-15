@@ -39,10 +39,43 @@ function normalizeLine(line: string): string {
   return stripLineComments(line).trim();
 }
 
+function combineMultilineStreamStatements(lines: string[]): string[] {
+  const combined: string[] = [];
+  let current = '';
+
+  const startsWithStreamContinuation = (line: string) => /^(<<|>>)\s*/.test(line);
+  const endsWithStreamContinuation = (line: string) => /(<<|>>)\s*$/.test(line);
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    if (!current) {
+      current = line;
+      continue;
+    }
+
+    if (startsWithStreamContinuation(line) || endsWithStreamContinuation(current)) {
+      current = `${current} ${line}`.trim();
+      continue;
+    }
+
+    combined.push(current);
+    current = line;
+  }
+
+  if (current) {
+    combined.push(current);
+  }
+
+  return combined;
+}
+
 function splitToTokens(lines: string[]): string[] {
   const tokens: string[] = [];
+  const logicalLines = combineMultilineStreamStatements(lines);
 
-  for (const line of lines) {
+  for (const line of logicalLines) {
     if (!line) continue;
 
     let current = '';
