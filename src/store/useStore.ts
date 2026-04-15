@@ -30,12 +30,8 @@ interface FlowStore {
   updateNodeProperty: (nodeId: string, property: string, value: any) => void;
   updateEdgeLabel: (edgeId: string, label: string) => void;
   updateEdgeProperty: (edgeId: string, property: string, value: any) => void;
-  setEdgeControlPoint: (edgeId: string, index: number, point: { x: number; y: number }) => void;
-  addEdgeControlPoint: (edgeId: string, index: number, point: { x: number; y: number }) => void;
-  removeEdgeControlPoint: (edgeId: string, index: number) => void;
   deleteEdge: (edgeId: string) => void;
   reverseEdge: (edgeId: string) => void;
-  reconnectEdge: (edgeId: string, connection: Connection) => void;
 }
 
 const initialSandbox: Tab = {
@@ -220,10 +216,6 @@ export const useStore = create<FlowStore>((set) => ({
     const updatedEdges = activeTab.edges.map(edge => {
       if (edge.id === edgeId) {
         const updatedEdge = { ...edge };
-        const edgeData = typeof updatedEdge.data === 'object' && updatedEdge.data !== null
-          ? { ...(updatedEdge.data as Record<string, any>) }
-          : {};
-        updatedEdge.data = edgeData;
         
         // Обновить style в зависимости от свойства
         if (property === 'strokeColor') {
@@ -236,13 +228,13 @@ export const useStore = create<FlowStore>((set) => ({
             ...(markerEnd ?? {}),
             color: value,
           };
-          edgeData.strokeColor = value;
+          if (updatedEdge.data) updatedEdge.data.strokeColor = value;
         } else if (property === 'strokeWidth') {
           updatedEdge.style = { ...updatedEdge.style, strokeWidth: value };
-          edgeData.strokeWidth = value;
+          if (updatedEdge.data) updatedEdge.data.strokeWidth = value;
         } else if (property === 'curveType') {
           updatedEdge.type = value === 'straight' ? 'straight' : value === 'bezier' ? 'bezier' : 'smoothstep';
-          edgeData.curveType = value;
+          if (updatedEdge.data) updatedEdge.data.curveType = value;
         } else if (property === 'animated') {
           updatedEdge.animated = value;
         }
@@ -254,99 +246,6 @@ export const useStore = create<FlowStore>((set) => ({
 
     return {
       tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab)
-    };
-  }),
-  setEdgeControlPoint: (edgeId, index, point) => set((state) => {
-    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
-    if (!activeTab) return state;
-
-    const updatedEdges = activeTab.edges.map((edge) => {
-      if (edge.id !== edgeId) return edge;
-
-      const edgeData = typeof edge.data === 'object' && edge.data !== null
-        ? { ...(edge.data as Record<string, any>) }
-        : {};
-
-      const controlPoints = Array.isArray(edgeData.controlPoints)
-        ? [...edgeData.controlPoints]
-        : [];
-
-      if (index < 0 || index >= controlPoints.length) {
-        return edge;
-      }
-
-      controlPoints[index] = point;
-      edgeData.controlPoints = controlPoints;
-
-      return {
-        ...edge,
-        data: edgeData,
-      };
-    });
-
-    return {
-      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
-    };
-  }),
-  addEdgeControlPoint: (edgeId, index, point) => set((state) => {
-    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
-    if (!activeTab) return state;
-
-    const updatedEdges = activeTab.edges.map((edge) => {
-      if (edge.id !== edgeId) return edge;
-
-      const edgeData = typeof edge.data === 'object' && edge.data !== null
-        ? { ...(edge.data as Record<string, any>) }
-        : {};
-
-      const controlPoints = Array.isArray(edgeData.controlPoints)
-        ? [...edgeData.controlPoints]
-        : [];
-
-      const safeIndex = Math.max(0, Math.min(index, controlPoints.length));
-      controlPoints.splice(safeIndex, 0, point);
-      edgeData.controlPoints = controlPoints;
-
-      return {
-        ...edge,
-        data: edgeData,
-      };
-    });
-
-    return {
-      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
-    };
-  }),
-  removeEdgeControlPoint: (edgeId, index) => set((state) => {
-    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
-    if (!activeTab) return state;
-
-    const updatedEdges = activeTab.edges.map((edge) => {
-      if (edge.id !== edgeId) return edge;
-
-      const edgeData = typeof edge.data === 'object' && edge.data !== null
-        ? { ...(edge.data as Record<string, any>) }
-        : {};
-
-      const controlPoints = Array.isArray(edgeData.controlPoints)
-        ? [...edgeData.controlPoints]
-        : [];
-
-      if (index < 0 || index >= controlPoints.length) {
-        return edge;
-      }
-
-      controlPoints.splice(index, 1);
-      edgeData.controlPoints = controlPoints;
-
-      return {
-        ...edge,
-        data: edgeData,
-      };
-    });
-
-    return {
-      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
     };
   }),
   deleteEdge: (edgeId) => set((state) => {
@@ -382,26 +281,6 @@ export const useStore = create<FlowStore>((set) => ({
       tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
     };
   }),
-  reconnectEdge: (edgeId, connection) => set((state) => {
-    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
-    if (!activeTab) return state;
-
-    const updatedEdges = activeTab.edges.map((edge) => {
-      if (edge.id !== edgeId) return edge;
-
-      return {
-        ...edge,
-        source: connection.source ?? edge.source,
-        target: connection.target ?? edge.target,
-        sourceHandle: connection.sourceHandle ?? undefined,
-        targetHandle: connection.targetHandle ?? undefined,
-      };
-    });
-
-    return {
-      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
-    };
-  }),
   onConnectActiveTab: (connection) => set((state) => {
     const active = state.activeTabId;
     if (!active) return state;
@@ -411,7 +290,6 @@ export const useStore = create<FlowStore>((set) => ({
       label: '',
       type: 'smoothstep' as const,
       style: { stroke: '#334155', strokeWidth: 1.6 },
-      data: { curveType: 'smoothstep', strokeColor: '#334155', strokeWidth: 1.6, autoOrthogonal: false },
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 18,

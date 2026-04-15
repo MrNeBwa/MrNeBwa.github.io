@@ -429,12 +429,6 @@ function buildFlowchartForFunction(functionName: string, bodyLines: string[], co
       label,
       type: 'smoothstep',
       style: { stroke: '#334155', strokeWidth: 1.6 },
-      data: {
-        curveType: 'smoothstep',
-        strokeColor: '#334155',
-        strokeWidth: 1.6,
-        autoOrthogonal: true,
-      },
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 18,
