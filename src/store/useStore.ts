@@ -30,6 +30,8 @@ interface FlowStore {
   updateNodeProperty: (nodeId: string, property: string, value: any) => void;
   updateEdgeLabel: (edgeId: string, label: string) => void;
   updateEdgeProperty: (edgeId: string, property: string, value: any) => void;
+  deleteEdge: (edgeId: string) => void;
+  reverseEdge: (edgeId: string) => void;
 }
 
 const initialSandbox: Tab = {
@@ -244,6 +246,39 @@ export const useStore = create<FlowStore>((set) => ({
 
     return {
       tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab)
+    };
+  }),
+  deleteEdge: (edgeId) => set((state) => {
+    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+    if (!activeTab) return state;
+
+    const updatedEdges = activeTab.edges.filter(edge => edge.id !== edgeId);
+
+    return {
+      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
+      selectedEdgeId: state.selectedEdgeId === edgeId ? null : state.selectedEdgeId,
+    };
+  }),
+  reverseEdge: (edgeId) => set((state) => {
+    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+    if (!activeTab) return state;
+
+    const updatedEdges = activeTab.edges.map((edge) => {
+      if (edge.id !== edgeId) return edge;
+
+      const updatedEdge: Edge = {
+        ...edge,
+        source: edge.target,
+        target: edge.source,
+        sourceHandle: undefined,
+        targetHandle: undefined,
+      };
+
+      return updatedEdge;
+    });
+
+    return {
+      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
     };
   }),
   onConnectActiveTab: (connection) => set((state) => {

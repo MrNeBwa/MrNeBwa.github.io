@@ -1,5 +1,5 @@
 import { useStore } from '../../store/useStore';
-import { X } from 'lucide-react';
+import { ArrowRightLeft, Trash2, X } from 'lucide-react';
 import { useMemo } from 'react';
 import type { Edge } from '@xyflow/react';
 
@@ -9,6 +9,8 @@ export function EdgePropertiesPanel() {
   const activeTabId = useStore((s) => s.activeTabId);
   const updateEdgeLabel = useStore((s) => s.updateEdgeLabel);
   const updateEdgeProperty = useStore((s) => s.updateEdgeProperty);
+  const deleteEdge = useStore((s) => s.deleteEdge);
+  const reverseEdge = useStore((s) => s.reverseEdge);
   const selectEdge = useStore((s) => s.selectEdge);
 
   const activeTab = useMemo(() => tabs.find(t => t.id === activeTabId), [tabs, activeTabId]);
@@ -148,6 +150,25 @@ export function EdgePropertiesPanel() {
             />
             <span className="text-sm font-medium text-slate-700">Анимированная стрелка</span>
           </label>
+        </div>
+
+        {/* Действия со стрелкой */}
+        <div className="pt-2 border-t border-slate-200 space-y-2">
+          <button
+            onClick={() => reverseEdge(selectedEdge.id)}
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-3 rounded flex items-center justify-center gap-2 transition"
+          >
+            <ArrowRightLeft size={16} />
+            <span>Развернуть направление</span>
+          </button>
+
+          <button
+            onClick={() => deleteEdge(selectedEdge.id)}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded flex items-center justify-center gap-2 transition"
+          >
+            <Trash2 size={16} />
+            <span>Удалить стрелку</span>
+          </button>
         </div>
 
         {/* Информация */}
