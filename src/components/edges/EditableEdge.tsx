@@ -32,6 +32,17 @@ function buildBezierPath(points: FlowPoint[]): string {
   return path;
 }
 
+function buildOrthogonalPath(source: FlowPoint, target: FlowPoint): string {
+  const midX = (source.x + target.x) / 2;
+  const points: FlowPoint[] = [
+    source,
+    { x: midX, y: source.y },
+    { x: midX, y: target.y },
+    target,
+  ];
+  return buildPolylinePath(points);
+}
+
 export function EditableEdge(props: EdgeProps) {
   const {
     id,
@@ -55,14 +66,15 @@ export function EditableEdge(props: EdgeProps) {
 
   const edgeData = (data || {}) as Record<string, any>;
   const curveType = String(edgeData.curveType || 'smoothstep');
+  const autoOrthogonal = Boolean(edgeData.autoOrthogonal);
   const controlPoints = (Array.isArray(edgeData.controlPoints)
     ? edgeData.controlPoints
     : []) as FlowPoint[];
 
-  const allPoints = useMemo(
-    () => [{ x: sourceX, y: sourceY }, ...controlPoints, { x: targetX, y: targetY }],
-    [sourceX, sourceY, targetX, targetY, controlPoints],
-  );
+  const sourcePoint = useMemo(() => ({ x: sourceX, y: sourceY }), [sourceX, sourceY]);
+  const targetPoint = useMemo(() => ({ x: targetX, y: targetY }), [targetX, targetY]);
+
+  const allPoints = useMemo(() => [sourcePoint, ...controlPoints, targetPoint], [sourcePoint, controlPoints, targetPoint]);
 
   const segmentMidPoints = useMemo(() => {
     const mids: FlowPoint[] = [];
@@ -82,8 +94,16 @@ export function EditableEdge(props: EdgeProps) {
   }, [segmentMidPoints, sourceX, sourceY, targetX, targetY]);
 
   const edgePath = useMemo(
-    () => (curveType === 'bezier' ? buildBezierPath(allPoints) : buildPolylinePath(allPoints)),
-    [curveType, allPoints],
+    () => {
+      if (curveType === 'bezier') {
+        return buildBezierPath(allPoints);
+      }
+      if (curveType === 'smoothstep' && autoOrthogonal && controlPoints.length === 0) {
+        return buildOrthogonalPath(sourcePoint, targetPoint);
+      }
+      return buildPolylinePath(allPoints);
+    },
+    [curveType, allPoints, autoOrthogonal, controlPoints.length, sourcePoint, targetPoint],
   );
 
   useEffect(() => {
@@ -111,7 +131,7 @@ export function EditableEdge(props: EdgeProps) {
 
   return (
     <>
-      <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} interactionWidth={36} />
+      <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} interactionWidth={64} />
 
       {label ? (
         <EdgeLabelRenderer>

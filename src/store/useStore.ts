@@ -411,7 +411,7 @@ export const useStore = create<FlowStore>((set) => ({
       label: '',
       type: 'smoothstep' as const,
       style: { stroke: '#334155', strokeWidth: 1.6 },
-      data: { curveType: 'smoothstep', strokeColor: '#334155', strokeWidth: 1.6 },
+      data: { curveType: 'smoothstep', strokeColor: '#334155', strokeWidth: 1.6, autoOrthogonal: false },
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 18,
