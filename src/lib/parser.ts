@@ -173,32 +173,27 @@ function parseStatements(tokens: string[]): Statement[] {
     return statement ? [statement] : [];
   };
 
+  const parseInlineSwitchBody = (inline: string): Statement[] => {
+    const body: Statement[] = [];
+    const chunks = inline
+      .split(';')
+      .map((chunk) => chunk.trim())
+      .filter(Boolean);
+
+    for (const chunk of chunks) {
+      if (/^break\b/.test(chunk) || /^continue\b/.test(chunk)) {
+        continue;
+      }
+
+      body.push({ kind: 'action', text: `${chunk};` });
+    }
+
+    return body;
+  };
+
   const parseSwitchBody = () => {
     const cases: Array<{ label: string; body: Statement[] }> = [];
     let defaultBody: Statement[] = [];
-
-    const parseInlineStatements = (inline: string): Statement[] => {
-      const cleaned = inline.trim();
-      if (!cleaned) return [];
-      const inlineTokens = splitToTokens([cleaned]);
-      return parseStatements(inlineTokens);
-    };
-
-    const extractCaseLabelAndTail = (token: string): { label: string; tail: string } => {
-      const match = token.match(/^case\s+(.+):\s*(.*)$/);
-      if (!match) {
-        return { label: token.replace(/^case\s+/, '').trim(), tail: '' };
-      }
-      return {
-        label: (match[1] || '').trim(),
-        tail: (match[2] || '').trim(),
-      };
-    };
-
-    const extractDefaultTail = (token: string): string => {
-      const match = token.match(/^default\s*:\s*(.*)$/);
-      return (match?.[1] || '').trim();
-    };
 
     if (tokens[index] === '{') {
       index += 1;
@@ -208,18 +203,28 @@ function parseStatements(tokens: string[]): Statement[] {
       const token = tokens[index];
 
       if (isCaseToken(token)) {
-        const { label, tail } = extractCaseLabelAndTail(token);
-        index += 1;
-        const body: Statement[] = [...parseInlineStatements(tail)];
+        const caseMatch = token.match(/^case\s+([^:]+)\s*:(.*)$/);
+        const label = (caseMatch?.[1] || token.replace(/^case\s+/, '').replace(/:$/, '')).trim();
+        const inlineRemainder = (caseMatch?.[2] || '').trim();
+        const hasInlineBreak = /\bbreak\b/.test(inlineRemainder);
 
-        while (
-          index < tokens.length
-          && tokens[index] !== '}'
-          && !isCaseToken(tokens[index])
-          && !isDefaultToken(tokens[index])
-        ) {
-          const stmt = parseOne();
-          if (stmt) body.push(stmt);
+        index += 1;
+        const body: Statement[] = [];
+
+        if (inlineRemainder) {
+          body.push(...parseInlineSwitchBody(inlineRemainder));
+        }
+
+        if (!hasInlineBreak) {
+          while (
+            index < tokens.length
+            && tokens[index] !== '}'
+            && !isCaseToken(tokens[index])
+            && !isDefaultToken(tokens[index])
+          ) {
+            const stmt = parseOne();
+            if (stmt) body.push(stmt);
+          }
         }
 
         cases.push({ label, body });
@@ -227,16 +232,26 @@ function parseStatements(tokens: string[]): Statement[] {
       }
 
       if (isDefaultToken(token)) {
-        const tail = extractDefaultTail(token);
+        const defaultMatch = token.match(/^default\s*:(.*)$/);
+        const inlineRemainder = (defaultMatch?.[1] || '').trim();
+        const hasInlineBreak = /\bbreak\b/.test(inlineRemainder);
+
         index += 1;
-        const body: Statement[] = [...parseInlineStatements(tail)];
-        while (
-          index < tokens.length
-          && tokens[index] !== '}'
-          && !isCaseToken(tokens[index])
-        ) {
-          const stmt = parseOne();
-          if (stmt) body.push(stmt);
+        const body: Statement[] = [];
+
+        if (inlineRemainder) {
+          body.push(...parseInlineSwitchBody(inlineRemainder));
+        }
+
+        if (!hasInlineBreak) {
+          while (
+            index < tokens.length
+            && tokens[index] !== '}'
+            && !isCaseToken(tokens[index])
+          ) {
+            const stmt = parseOne();
+            if (stmt) body.push(stmt);
+          }
         }
         defaultBody = body;
         continue;
