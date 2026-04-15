@@ -30,7 +30,9 @@ interface FlowStore {
   updateNodeProperty: (nodeId: string, property: string, value: any) => void;
   updateEdgeLabel: (edgeId: string, label: string) => void;
   updateEdgeProperty: (edgeId: string, property: string, value: any) => void;
-  updateEdgeControlPoint: (edgeId: string, point: { x: number; y: number }) => void;
+  setEdgeControlPoint: (edgeId: string, index: number, point: { x: number; y: number }) => void;
+  addEdgeControlPoint: (edgeId: string, index: number, point: { x: number; y: number }) => void;
+  removeEdgeControlPoint: (edgeId: string, index: number) => void;
   deleteEdge: (edgeId: string) => void;
   reverseEdge: (edgeId: string) => void;
   reconnectEdge: (edgeId: string, connection: Connection) => void;
@@ -254,7 +256,7 @@ export const useStore = create<FlowStore>((set) => ({
       tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab)
     };
   }),
-  updateEdgeControlPoint: (edgeId, point) => set((state) => {
+  setEdgeControlPoint: (edgeId, index, point) => set((state) => {
     const activeTab = state.tabs.find(t => t.id === state.activeTabId);
     if (!activeTab) return state;
 
@@ -265,7 +267,77 @@ export const useStore = create<FlowStore>((set) => ({
         ? { ...(edge.data as Record<string, any>) }
         : {};
 
-      edgeData.controlPoint = point;
+      const controlPoints = Array.isArray(edgeData.controlPoints)
+        ? [...edgeData.controlPoints]
+        : [];
+
+      if (index < 0 || index >= controlPoints.length) {
+        return edge;
+      }
+
+      controlPoints[index] = point;
+      edgeData.controlPoints = controlPoints;
+
+      return {
+        ...edge,
+        data: edgeData,
+      };
+    });
+
+    return {
+      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
+    };
+  }),
+  addEdgeControlPoint: (edgeId, index, point) => set((state) => {
+    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+    if (!activeTab) return state;
+
+    const updatedEdges = activeTab.edges.map((edge) => {
+      if (edge.id !== edgeId) return edge;
+
+      const edgeData = typeof edge.data === 'object' && edge.data !== null
+        ? { ...(edge.data as Record<string, any>) }
+        : {};
+
+      const controlPoints = Array.isArray(edgeData.controlPoints)
+        ? [...edgeData.controlPoints]
+        : [];
+
+      const safeIndex = Math.max(0, Math.min(index, controlPoints.length));
+      controlPoints.splice(safeIndex, 0, point);
+      edgeData.controlPoints = controlPoints;
+
+      return {
+        ...edge,
+        data: edgeData,
+      };
+    });
+
+    return {
+      tabs: state.tabs.map(tab => tab.id === state.activeTabId ? { ...tab, edges: updatedEdges } : tab),
+    };
+  }),
+  removeEdgeControlPoint: (edgeId, index) => set((state) => {
+    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+    if (!activeTab) return state;
+
+    const updatedEdges = activeTab.edges.map((edge) => {
+      if (edge.id !== edgeId) return edge;
+
+      const edgeData = typeof edge.data === 'object' && edge.data !== null
+        ? { ...(edge.data as Record<string, any>) }
+        : {};
+
+      const controlPoints = Array.isArray(edgeData.controlPoints)
+        ? [...edgeData.controlPoints]
+        : [];
+
+      if (index < 0 || index >= controlPoints.length) {
+        return edge;
+      }
+
+      controlPoints.splice(index, 1);
+      edgeData.controlPoints = controlPoints;
 
       return {
         ...edge,

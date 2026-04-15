@@ -5,23 +5,31 @@ import { useStore } from '../../store/useStore';
 
 type FlowPoint = { x: number; y: number };
 
-function getDefaultControlPoint(sourceX: number, sourceY: number, targetX: number, targetY: number): FlowPoint {
-  return {
-    x: (sourceX + targetX) / 2,
-    y: (sourceY + targetY) / 2,
-  };
+function buildPolylinePath(points: FlowPoint[]): string {
+  if (!points.length) return '';
+  const [first, ...rest] = points;
+  return `M ${first.x} ${first.y} ${rest.map((point) => `L ${point.x} ${point.y}`).join(' ')}`;
 }
 
-function buildPath(curveType: string, sourceX: number, sourceY: number, targetX: number, targetY: number, control: FlowPoint): string {
-  if (curveType === 'bezier') {
-    return `M ${sourceX} ${sourceY} Q ${control.x} ${control.y} ${targetX} ${targetY}`;
+function buildBezierPath(points: FlowPoint[]): string {
+  if (points.length < 2) return '';
+  if (points.length === 2) {
+    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
   }
 
-  if (curveType === 'straight') {
-    return `M ${sourceX} ${sourceY} L ${control.x} ${control.y} L ${targetX} ${targetY}`;
+  let path = `M ${points[0].x} ${points[0].y}`;
+  for (let index = 1; index < points.length - 1; index += 1) {
+    const current = points[index];
+    const next = points[index + 1];
+    const midX = (current.x + next.x) / 2;
+    const midY = (current.y + next.y) / 2;
+    if (index === points.length - 2) {
+      path += ` Q ${current.x} ${current.y} ${next.x} ${next.y}`;
+    } else {
+      path += ` Q ${current.x} ${current.y} ${midX} ${midY}`;
+    }
   }
-
-  return `M ${sourceX} ${sourceY} L ${control.x} ${sourceY} L ${control.x} ${targetY} L ${targetX} ${targetY}`;
+  return path;
 }
 
 export function EditableEdge(props: EdgeProps) {
@@ -38,33 +46,56 @@ export function EditableEdge(props: EdgeProps) {
     selected,
   } = props;
 
-  const updateEdgeControlPoint = useStore((s) => s.updateEdgeControlPoint);
+  const setEdgeControlPoint = useStore((s) => s.setEdgeControlPoint);
+  const addEdgeControlPoint = useStore((s) => s.addEdgeControlPoint);
+  const removeEdgeControlPoint = useStore((s) => s.removeEdgeControlPoint);
   const selectedEdgeId = useStore((s) => s.selectedEdgeId);
   const { screenToFlowPosition } = useReactFlow();
-  const draggingRef = useRef(false);
+  const draggingPointIndexRef = useRef<number | null>(null);
 
   const edgeData = (data || {}) as Record<string, any>;
   const curveType = String(edgeData.curveType || 'smoothstep');
+  const controlPoints = (Array.isArray(edgeData.controlPoints)
+    ? edgeData.controlPoints
+    : []) as FlowPoint[];
 
-  const controlPoint = useMemo(() => {
-    const saved = edgeData.controlPoint as FlowPoint | undefined;
-    return saved || getDefaultControlPoint(sourceX, sourceY, targetX, targetY);
-  }, [edgeData.controlPoint, sourceX, sourceY, targetX, targetY]);
+  const allPoints = useMemo(
+    () => [{ x: sourceX, y: sourceY }, ...controlPoints, { x: targetX, y: targetY }],
+    [sourceX, sourceY, targetX, targetY, controlPoints],
+  );
+
+  const segmentMidPoints = useMemo(() => {
+    const mids: FlowPoint[] = [];
+    for (let index = 0; index < allPoints.length - 1; index += 1) {
+      const current = allPoints[index];
+      const next = allPoints[index + 1];
+      mids.push({ x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 });
+    }
+    return mids;
+  }, [allPoints]);
+
+  const labelPoint = useMemo(() => {
+    if (!segmentMidPoints.length) {
+      return { x: (sourceX + targetX) / 2, y: (sourceY + targetY) / 2 };
+    }
+    return segmentMidPoints[Math.floor(segmentMidPoints.length / 2)];
+  }, [segmentMidPoints, sourceX, sourceY, targetX, targetY]);
 
   const edgePath = useMemo(
-    () => buildPath(curveType, sourceX, sourceY, targetX, targetY, controlPoint),
-    [curveType, sourceX, sourceY, targetX, targetY, controlPoint],
+    () => (curveType === 'bezier' ? buildBezierPath(allPoints) : buildPolylinePath(allPoints)),
+    [curveType, allPoints],
   );
 
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
-      if (!draggingRef.current) return;
+      const pointIndex = draggingPointIndexRef.current;
+      if (pointIndex === null) return;
       const flowPosition = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-      updateEdgeControlPoint(id, { x: flowPosition.x, y: flowPosition.y });
+      setEdgeControlPoint(id, pointIndex, { x: flowPosition.x, y: flowPosition.y });
     };
 
     const onMouseUp = () => {
-      draggingRef.current = false;
+      draggingPointIndexRef.current = null;
     };
 
     window.addEventListener('mousemove', onMouseMove);
@@ -74,7 +105,7 @@ export function EditableEdge(props: EdgeProps) {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [id, screenToFlowPosition, updateEdgeControlPoint]);
+  }, [id, screenToFlowPosition, setEdgeControlPoint]);
 
   const showHandle = selected || selectedEdgeId === id;
 
@@ -88,7 +119,7 @@ export function EditableEdge(props: EdgeProps) {
             className="nodrag nopan"
             style={{
               position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${controlPoint.x}px, ${controlPoint.y}px)`,
+              transform: `translate(-50%, -50%) translate(${labelPoint.x}px, ${labelPoint.y}px)`,
               fontSize: 12,
               fontWeight: 600,
               color: '#0f172a',
@@ -105,22 +136,50 @@ export function EditableEdge(props: EdgeProps) {
       ) : null}
 
       {showHandle ? (
-        <g className="nodrag nopan">
-          <circle
-            cx={controlPoint.x}
-            cy={controlPoint.y}
-            r={7}
-            fill="#ffffff"
-            stroke="#2563eb"
-            strokeWidth={2}
-            style={{ cursor: 'grab' }}
-            onMouseDown={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-              draggingRef.current = true;
-            }}
-          />
-        </g>
+        <>
+          <g className="nodrag nopan">
+            {controlPoints.map((point, index) => (
+              <circle
+                key={`${id}-cp-${index}`}
+                cx={point.x}
+                cy={point.y}
+                r={7}
+                fill="#ffffff"
+                stroke="#2563eb"
+                strokeWidth={2}
+                style={{ cursor: 'grab' }}
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  draggingPointIndexRef.current = index;
+                }}
+                onContextMenu={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  removeEdgeControlPoint(id, index);
+                }}
+              />
+            ))}
+          </g>
+
+          <g className="nodrag nopan">
+            {segmentMidPoints.map((point, index) => (
+              <g
+                key={`${id}-mid-${index}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  addEdgeControlPoint(id, index, point);
+                }}
+                style={{ cursor: 'copy' }}
+              >
+                <circle cx={point.x} cy={point.y} r={5} fill="#dbeafe" stroke="#2563eb" strokeWidth={1.5} />
+                <line x1={point.x - 2.5} y1={point.y} x2={point.x + 2.5} y2={point.y} stroke="#1d4ed8" strokeWidth={1.5} />
+                <line x1={point.x} y1={point.y - 2.5} x2={point.x} y2={point.y + 2.5} stroke="#1d4ed8" strokeWidth={1.5} />
+              </g>
+            ))}
+          </g>
+        </>
       ) : null}
     </>
   );
