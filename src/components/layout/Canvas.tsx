@@ -5,6 +5,11 @@ import { MarkerType } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useStore } from '../../store/useStore';
 import { nodeTypes } from '../nodes/ProcessNode';
+import { EditableEdge } from '../edges/EditableEdge';
+
+const edgeTypes = {
+  editableEdge: EditableEdge,
+};
 
 export function Canvas() {
   const tabs = useStore((s) => s.tabs);
@@ -59,10 +64,15 @@ export function Canvas() {
   const renderedEdges = useMemo(
     () => activeTab.edges.map((edge) => ({
       ...edge,
+      type: 'editableEdge',
       selectable: true,
       reconnectable: true,
       focusable: true,
       interactionWidth: (edge as any).interactionWidth ?? 32,
+      data: {
+        ...(typeof edge.data === 'object' && edge.data !== null ? edge.data : {}),
+        curveType: (edge as any)?.data?.curveType || edge.type || 'smoothstep',
+      },
       style: {
         ...(edge.style || {}),
         stroke: selectedEdgeId === edge.id ? '#2563eb' : (edge.style as any)?.stroke || '#334155',
@@ -103,6 +113,7 @@ export function Canvas() {
         onNodeClick={handleNodeClick}
         onEdgeClick={handleEdgeClick}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
         elementsSelectable
         edgesReconnectable
