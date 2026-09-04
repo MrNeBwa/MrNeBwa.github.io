@@ -1,1286 +1,1362 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Юрий Тимошенко — C++ разработчик. Системное программирование, многопоточность, высоконагруженные сервисы, оптимизация производительности."
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Юрий Тимошенко — C++ разработчик</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
     <style>
-      :root {
-        --bg: #0b0f14;
-        --bg-soft: #10161d;
-        --surface: #10161d;
-        --surface-2: #141c25;
-        --border: #1c2836;
-        --border-soft: #16202c;
-        --text: #c9d4dd;
-        --text-strong: #eef4f8;
-        --muted: #7c8b98;
-        --accent: #7ee787;
-        --accent-dim: #3a4d3f;
-        --amber: #fbbf24;
-        --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-        --sans: "Inter", system-ui, -apple-system, sans-serif;
-        --radius: 12px;
-      }
+        :root {
+            --bg: #0d1117;
+            --bg-secondary: #161b22;
+            --fg: #c9d1d9;
+            --fg-bright: #f0f6fc;
+            --green: #3fb950;
+            --green-dim: #238636;
+            --blue: #58a6ff;
+            --cyan: #39c5cf;
+            --yellow: #d29922;
+            --red: #f85149;
+            --purple: #bc8cff;
+            --magenta: #f778ba;
+            --border: #30363d;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-        scroll-padding-top: 84px;
-      }
-
-      body {
-        font-family: var(--sans);
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-        position: relative;
-        overflow-x: hidden;
-      }
-
-      /* subtle grid/scanline backdrop */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 0;
-        background-image:
-          linear-gradient(rgba(126, 231, 135, 0.028) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(126, 231, 135, 0.028) 1px, transparent 1px);
-        background-size: 44px 44px;
-        mask-image: radial-gradient(ellipse 90% 80% at 50% 0%, #000 30%, transparent 75%);
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .container {
-        width: min(1080px, calc(100% - 48px));
-        margin: 0 auto;
-        position: relative;
-        z-index: 1;
-      }
-
-      .mono {
-        font-family: var(--mono);
-      }
-
-      .accent {
-        color: var(--accent);
-      }
-
-      /* ---------- NAV ---------- */
-      .nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        backdrop-filter: blur(12px);
-        background: rgba(11, 15, 20, 0.8);
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.3s ease, background 0.3s ease;
-      }
-
-      .nav.scrolled {
-        border-bottom-color: var(--border);
-        background: rgba(11, 15, 20, 0.92);
-      }
-
-      .nav-inner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 64px;
-      }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-family: var(--mono);
-        font-weight: 600;
-        color: var(--text-strong);
-        letter-spacing: -0.01em;
-      }
-
-      .brand-mark {
-        width: 28px;
-        height: 28px;
-        border-radius: 7px;
-        background: var(--accent);
-        color: #052012;
-        display: grid;
-        place-items: center;
-        font-weight: 800;
-        font-size: 15px;
-      }
-
-      .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 28px;
-      }
-
-      .nav-links a {
-        font-size: 14px;
-        color: var(--muted);
-        transition: color 0.2s ease;
-        position: relative;
-      }
-
-      .nav-links a:hover,
-      .nav-links a.active {
-        color: var(--text-strong);
-      }
-
-      .nav-links a::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -5px;
-        width: 0;
-        height: 2px;
-        background: var(--accent);
-        transition: width 0.25s ease;
-      }
-
-      .nav-links a:hover::after,
-      .nav-links a.active::after {
-        width: 100%;
-      }
-
-      .nav-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 9px 16px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-strong);
-        transition: border-color 0.2s, background 0.2s, transform 0.15s;
-      }
-
-      .nav-cta:hover {
-        border-color: var(--accent);
-        background: var(--surface-2);
-      }
-
-      .nav-toggle {
-        display: none;
-        background: none;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        width: 42px;
-        height: 40px;
-        cursor: pointer;
-        color: var(--text);
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-      }
-
-      .nav-toggle span {
-        display: block;
-        width: 18px;
-        height: 2px;
-        background: currentColor;
-        transition: transform 0.25s, opacity 0.25s;
-      }
-
-      .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-      .nav-toggle.open span:nth-child(2) { opacity: 0; }
-      .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-      .mobile-menu {
-        display: none;
-        flex-direction: column;
-        padding: 12px 24px 20px;
-        gap: 4px;
-        background: var(--bg-soft);
-        border-bottom: 1px solid var(--border);
-      }
-
-      .mobile-menu a {
-        padding: 12px 4px;
-        font-size: 16px;
-        color: var(--text);
-      }
-
-      /* ---------- HERO ---------- */
-      .hero {
-        padding: 168px 0 96px;
-        position: relative;
-      }
-
-      .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        padding: 7px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        font-family: var(--mono);
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 28px;
-      }
-
-      .hero-badge .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--accent);
-        box-shadow: 0 0 0 4px rgba(126, 231, 135, 0.12);
-        animation: pulse 2s infinite;
-      }
-
-      @keyframes pulse {
-        0%, 100% { box-shadow: 0 0 0 4px rgba(126, 231, 135, 0.12); }
-        50% { box-shadow: 0 0 0 7px rgba(126, 231, 135, 0.06); }
-      }
-
-      .hero h1 {
-        font-size: clamp(2.6rem, 6vw, 4.4rem);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        line-height: 1.05;
-        color: var(--text-strong);
-        margin-bottom: 18px;
-      }
-
-      .hero h1 span {
-        color: var(--accent);
-      }
-
-      .hero-role {
-        font-family: var(--mono);
-        font-size: clamp(1.05rem, 2.4vw, 1.4rem);
-        color: var(--accent);
-        margin-bottom: 14px;
-        min-height: 1.6em;
-      }
-
-      .hero-role .typed-cursor {
-        display: inline-block;
-        width: 2px;
-        height: 1em;
-        background: var(--accent);
-        vertical-align: text-bottom;
-        margin-left: 2px;
-        animation: blink 1s steps(1) infinite;
-      }
-
-      @keyframes blink { 50% { opacity: 0; } }
-
-      .hero-desc {
-        max-width: 620px;
-        font-size: 1.12rem;
-        color: var(--muted);
-        margin-bottom: 40px;
-      }
-
-      .hero-desc strong {
-        color: var(--text);
-        font-weight: 600;
-      }
-
-      .hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        margin-bottom: 56px;
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        padding: 13px 22px;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.15s, background 0.2s, border-color 0.2s, color 0.2s;
-      }
-
-      .btn-primary {
-        background: var(--accent);
-        color: #052012;
-        border: 1px solid var(--accent);
-      }
-
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        background: #95f09c;
-      }
-
-      .btn-ghost {
-        background: transparent;
-        color: var(--text-strong);
-        border: 1px solid var(--border);
-      }
-
-      .btn-ghost:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        transform: translateY(-2px);
-      }
-
-      .hero-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 26px;
-      }
-
-      .hero-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 14px;
-        color: var(--muted);
-      }
-
-      .hero-meta-item svg {
-        color: var(--accent);
-        flex-shrink: 0;
-      }
-
-      /* ---------- SECTIONS ---------- */
-      section {
-        padding: 96px 0;
-        position: relative;
-      }
-
-      .section-head {
-        margin-bottom: 48px;
-        max-width: 640px;
-      }
-
-      .section-label {
-        font-family: var(--mono);
-        font-size: 13px;
-        color: var(--accent);
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        letter-spacing: 0.02em;
-      }
-
-      .section-label::before {
-        content: "";
-        width: 18px;
-        height: 1px;
-        background: var(--accent);
-        opacity: 0.6;
-      }
-
-      .section-title {
-        font-size: clamp(1.8rem, 4vw, 2.5rem);
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        color: var(--text-strong);
-        margin-bottom: 14px;
-      }
-
-      .section-sub {
-        color: var(--muted);
-        font-size: 1.02rem;
-      }
-
-      /* ---------- ABOUT ---------- */
-      .about-grid {
-        display: grid;
-        grid-template-columns: 1.4fr 1fr;
-        gap: 40px;
-        align-items: start;
-      }
-
-      .about-text p {
-        color: var(--muted);
-        margin-bottom: 16px;
-        font-size: 1.02rem;
-      }
-
-      .about-text p strong {
-        color: var(--text);
-      }
-
-      .about-terminal {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        overflow: hidden;
-        font-family: var(--mono);
-        font-size: 13.5px;
-      }
-
-      .term-bar {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        padding: 11px 14px;
-        background: var(--surface-2);
-        border-bottom: 1px solid var(--border);
-      }
-
-      .term-dot {
-        width: 11px;
-        height: 11px;
-        border-radius: 50%;
-      }
-
-      .term-dot.r { background: #ff5f56; }
-      .term-dot.y { background: #ffbd2e; }
-      .term-dot.g { background: #27c93f; }
-
-      .term-title {
-        margin-left: 8px;
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .term-body {
-        padding: 18px 20px;
-        line-height: 1.9;
-      }
-
-      .term-body .t-tag { color: var(--muted); }
-      .t-fn { color: #7fd7f2; }
-      .t-str { color: var(--amber); }
-      .t-kw { color: var(--accent); }
-      .t-num { color: #f28fb3; }
-      .t-com { color: #5a6b78; font-style: italic; }
-
-      .stat-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-        margin-top: 56px;
-      }
-
-      .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 26px 22px;
-        text-align: left;
-      }
-
-      .stat-card .num {
-        font-family: var(--mono);
-        font-size: 2.2rem;
-        font-weight: 600;
-        color: var(--text-strong);
-        margin-bottom: 6px;
-      }
-
-      .stat-card .num span {
-        color: var(--accent);
-      }
-
-      .stat-card .label {
-        font-size: 14px;
-        color: var(--muted);
-      }
-
-      /* ---------- SKILLS ---------- */
-      .skills-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-      }
-
-      .skill-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 28px 24px;
-        transition: border-color 0.25s, transform 0.2s;
-      }
-
-      .skill-card:hover {
-        border-color: var(--accent-dim);
-        transform: translateY(-3px);
-      }
-
-      .skill-card-head {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 18px;
-      }
-
-      .skill-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        display: grid;
-        place-items: center;
-        color: var(--accent);
-        flex-shrink: 0;
-      }
-
-      .skill-card h3 {
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: var(--text-strong);
-      }
-
-      .skill-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .tag {
-        font-family: var(--mono);
-        font-size: 12.5px;
-        padding: 5px 11px;
-        border-radius: 7px;
-        background: var(--surface-2);
-        border: 1px solid var(--border-soft);
-        color: var(--text);
-        transition: border-color 0.2s, color 0.2s;
-      }
-
-      .tag:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-      }
-
-      /* ---------- EXPERIENCE ---------- */
-      .timeline {
-        position: relative;
-        padding-left: 32px;
-      }
-
-      .timeline::before {
-        content: "";
-        position: absolute;
-        left: 8px;
-        top: 6px;
-        bottom: 6px;
-        width: 2px;
-        background: linear-gradient(var(--accent-dim), var(--border));
-      }
-
-      .tl-item {
-        position: relative;
-        padding-bottom: 52px;
-      }
-
-      .tl-item:last-child {
-        padding-bottom: 0;
-      }
-
-      .tl-item::before {
-        content: "";
-        position: absolute;
-        left: -32px;
-        top: 7px;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--bg);
-        border: 2px solid var(--accent-dim);
-        box-shadow: 0 0 0 4px rgba(126, 231, 135, 0.08);
-      }
-
-      .tl-item:hover::before {
-        border-color: var(--accent);
-      }
-
-      .tl-role {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-strong);
-        margin-bottom: 4px;
-      }
-
-      .tl-company {
-        font-family: var(--mono);
-        font-size: 14px;
-        color: var(--accent);
-        margin-bottom: 4px;
-      }
-
-      .tl-date {
-        font-family: var(--mono);
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 16px;
-      }
-
-      .tl-desc {
-        color: var(--muted);
-        font-size: 1rem;
-        margin-bottom: 16px;
-        max-width: 720px;
-      }
-
-      .tl-points {
-        list-style: none;
-        margin-bottom: 16px;
-        max-width: 720px;
-      }
-
-      .tl-points li {
-        position: relative;
-        padding-left: 24px;
-        margin-bottom: 9px;
-        color: var(--text);
-        font-size: 0.98rem;
-      }
-
-      .tl-points li::before {
-        content: "→";
-        position: absolute;
-        left: 0;
-        color: var(--accent);
-        font-family: var(--mono);
-      }
-
-      /* ---------- PROJECTS ---------- */
-      .projects-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 22px;
-      }
-
-      .project-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 28px 26px;
-        display: flex;
-        flex-direction: column;
-        transition: border-color 0.25s, transform 0.2s;
-      }
-
-      .project-card:hover {
-        border-color: var(--accent-dim);
-        transform: translateY(-3px);
-      }
-
-      .project-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 16px;
-      }
-
-      .project-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 11px;
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        display: grid;
-        place-items: center;
-        color: var(--accent);
-      }
-
-      .project-lang {
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--muted);
-        background: var(--surface-2);
-        padding: 4px 10px;
-        border-radius: 6px;
-        border: 1px solid var(--border-soft);
-      }
-
-      .project-card h3 {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--text-strong);
-        margin-bottom: 10px;
-      }
-
-      .project-card p {
-        color: var(--muted);
-        font-size: 0.95rem;
-        margin-bottom: 18px;
-        flex-grow: 1;
-      }
-
-      .project-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 7px;
-        margin-bottom: 20px;
-      }
-
-      .project-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--accent);
-        transition: gap 0.2s;
-      }
-
-      .project-link:hover {
-        gap: 10px;
-      }
-
-      /* ---------- EDUCATION ---------- */
-      .edu-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-      }
-
-      .edu-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 28px 26px;
-      }
-
-      .edu-card h3 {
-        font-size: 1.12rem;
-        font-weight: 700;
-        color: var(--text-strong);
-        margin-bottom: 6px;
-      }
-
-      .edu-card .edu-place {
-        font-family: var(--mono);
-        font-size: 14px;
-        color: var(--accent);
-        margin-bottom: 4px;
-      }
-
-      .edu-card .edu-date {
-        font-family: var(--mono);
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 14px;
-      }
-
-      .edu-card p {
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      /* ---------- LANGUAGES ---------- */
-      .lang-list {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-      }
-
-      .lang-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 24px;
-        text-align: center;
-      }
-
-      .lang-card .lang-name {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--text-strong);
-        margin-bottom: 6px;
-      }
-
-      .lang-card .lang-level {
-        font-family: var(--mono);
-        font-size: 13px;
-        color: var(--accent);
-        margin-bottom: 14px;
-      }
-
-      .lang-bar {
-        height: 6px;
-        border-radius: 999px;
-        background: var(--surface-2);
-        overflow: hidden;
-      }
-
-      .lang-bar-fill {
-        height: 100%;
-        border-radius: 999px;
-        background: var(--accent);
-        width: 0;
-        transition: width 1.2s cubic-bezier(0.25, 0.6, 0.2, 1);
-      }
-
-      /* ---------- CONTACT ---------- */
-      .contact-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 48px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .contact-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 50% 0%, rgba(126, 231, 135, 0.08), transparent 60%);
-        pointer-events: none;
-      }
-
-      .contact-card h2 {
-        font-size: clamp(1.6rem, 3.6vw, 2.2rem);
-        font-weight: 800;
-        color: var(--text-strong);
-        margin-bottom: 14px;
-        position: relative;
-      }
-
-      .contact-card p {
-        color: var(--muted);
-        margin-bottom: 32px;
-        max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
-        position: relative;
-      }
-
-      .contact-links {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 14px;
-        position: relative;
-      }
-
-      .contact-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        padding: 13px 20px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--bg-soft);
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text);
-        transition: border-color 0.2s, color 0.2s, transform 0.15s;
-      }
-
-      .contact-link:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        transform: translateY(-2px);
-      }
-
-      .contact-link svg {
-        color: var(--accent);
-      }
-
-      /* ---------- FOOTER ---------- */
-      footer {
-        border-top: 1px solid var(--border);
-        padding: 36px 0;
-      }
-
-      .footer-inner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-      }
-
-      .footer-inner p {
-        font-size: 13px;
-        color: var(--muted);
-      }
-
-      .footer-inner .mono {
-        color: var(--muted);
-      }
-
-      /* ---------- REVEAL ---------- */
-      .reveal {
-        opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.7s ease, transform 0.7s ease;
-      }
-
-      .reveal.visible {
-        opacity: 1;
-        transform: none;
-      }
-
-      /* ---------- RESPONSIVE ---------- */
-      @media (max-width: 860px) {
-        .about-grid { grid-template-columns: 1fr; }
-        .skills-grid { grid-template-columns: repeat(2, 1fr); }
-        .projects-grid { grid-template-columns: 1fr; }
-        .edu-grid { grid-template-columns: 1fr; }
-        .lang-list { grid-template-columns: 1fr; }
-        .stat-row { grid-template-columns: repeat(2, 1fr); }
-      }
-
-      @media (max-width: 640px) {
-        .nav-links { display: none; }
-        .nav-toggle { display: flex; }
-        .nav-cta { display: none; }
-        .mobile-menu.open { display: flex; }
-        section { padding: 64px 0; }
-        .hero { padding: 132px 0 64px; }
-        .contact-card { padding: 32px 22px; }
-      }
-
-      @media (max-width: 480px) {
-        .skills-grid { grid-template-columns: 1fr; }
-        .stat-row { grid-template-columns: 1fr; }
-      }
-
-      /* ---------- PRINT ---------- */
-      @media print {
         body {
-          background: #fff;
-          color: #111;
+            font-family: var(--font-mono);
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.7;
+            font-size: 14px;
+            overflow-x: hidden;
         }
-        body::before { display: none; }
-        .nav, .nav-toggle, .mobile-menu, .btn, .hero-actions, .project-link {
-          display: none !important;
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .hero { padding: 40px 0; }
-        section { padding: 36px 0; }
-        .container { width: 100%; }
-        .hero h1 { color: #111; }
-        .hero h1 span { color: #0a6b1f; }
-        .hero-role, .section-label, .tl-company, .edu-place, .lang-level { color: #0a6b1f; }
-        .hero-desc, .section-sub, .about-text p, .tl-desc, .tl-points li, .project-card p, .edu-card p, .contact-card p { color: #333; }
-        .hero-meta-item, .tl-date, .foot-inner p { color: #555; }
-        .about-terminal, .skill-card, .project-card, .edu-card, .lang-card, .stat-card, .contact-card, .term-bar {
-          background: #f7f7f7 !important;
-          border-color: #ddd !important;
-          color: #222 !important;
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
         }
-        .list-item, .timeline::before { border-color: #ccc; }
-        .reveal { opacity: 1; transform: none; }
-      }
+        ::-webkit-scrollbar-thumb {
+            background: var(--green-dim);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--green);
+        }
+
+        /* Header */
+        .terminal-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .terminal-titlebar {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            gap: 8px;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .terminal-btn.red { background: var(--red); }
+        .terminal-btn.yellow { background: var(--yellow); }
+        .terminal-btn.green { background: var(--green); }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            color: var(--fg);
+            opacity: 0.7;
+        }
+
+        /* Navigation */
+        .terminal-nav {
+            display: flex;
+            padding: 0 16px;
+            gap: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .terminal-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-link {
+            color: var(--fg);
+            text-decoration: none;
+            padding: 8px 12px;
+            font-size: 13px;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        .nav-link.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        /* Mobile menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--green);
+            padding: 6px 10px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        /* Main content */
+        main {
+            padding-top: 80px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 60px;
+        }
+
+        /* Hero / Neofetch */
+        .hero {
+            padding: 40px 0;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .neofetch-logo {
+            font-size: 10px;
+            line-height: 1.1;
+            color: var(--green);
+            white-space: pre;
+            flex-shrink: 0;
+        }
+
+        .hero-info {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .hero-info h1 {
+            font-size: 24px;
+            color: var(--fg-bright);
+            margin-bottom: 4px;
+        }
+
+        .hero-info .role {
+            color: var(--green);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .hero-info .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(63, 185, 80, 0.1);
+            border: 1px solid var(--green-dim);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--green);
+            margin-bottom: 16px;
+        }
+
+        .hero-info .status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-info .location {
+            color: var(--fg);
+            opacity: 0.7;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+            color: var(--fg);
+        }
+
+        .btn:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .btn-primary {
+            background: var(--green-dim);
+            border-color: var(--green);
+            color: var(--fg-bright);
+        }
+
+        .btn-primary:hover {
+            background: var(--green);
+            color: var(--bg);
+        }
+
+        /* Sections */
+        .section {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .section-number {
+            color: var(--green);
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--fg-bright);
+        }
+
+        .section-subtitle {
+            color: var(--fg);
+            opacity: 0.7;
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+
+        /* Terminal prompt style */
+        .prompt {
+            color: var(--green);
+        }
+
+        .prompt::before {
+            content: '$ ';
+        }
+
+        /* About section */
+        .about-text {
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            margin-bottom: 12px;
+        }
+
+        .about-text .comment {
+            color: var(--green-dim);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--fg);
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Code block */
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin: 16px 0;
+        }
+
+        .code-block .comment { color: #8b949e; }
+        .code-block .keyword { color: var(--red); }
+        .code-block .string { color: var(--cyan); }
+        .code-block .type { color: var(--yellow); }
+        .code-block .func { color: var(--blue); }
+        .code-block .number { color: var(--purple); }
+
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .skill-category {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .skill-category h3 {
+            color: var(--green);
+            font-size: 14px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .skill-tag {
+            background: rgba(63, 185, 80, 0.1);
+            border: 1px solid var(--green-dim);
+            color: var(--green);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Experience */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 32px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 20px;
+            width: 10px;
+            height: 10px;
+            background: var(--green);
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            color: var(--fg-bright);
+            font-size: 15px;
+        }
+
+        .timeline-company {
+            color: var(--green);
+            font-size: 13px;
+        }
+
+        .timeline-date {
+            color: var(--fg);
+            opacity: 0.6;
+            font-size: 12px;
+        }
+
+        .timeline-description {
+            font-size: 13px;
+            color: var(--fg);
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .timeline-achievements {
+            list-style: none;
+            font-size: 12px;
+        }
+
+        .timeline-achievements li {
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .timeline-achievements li::before {
+            content: '▸';
+            color: var(--green);
+            position: absolute;
+            left: 0;
+        }
+
+        /* Projects */
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: var(--green);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .project-name {
+            color: var(--fg-bright);
+            font-size: 16px;
+        }
+
+        .project-name a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .project-name a:hover {
+            color: var(--green);
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .project-tech span {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            color: var(--blue);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* Education */
+        .education-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .education-card h3 {
+            color: var(--fg-bright);
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .education-card .faculty {
+            color: var(--green);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .education-card .year {
+            color: var(--fg);
+            opacity: 0.6;
+            font-size: 12px;
+        }
+
+        .education-card .status-badge {
+            display: inline-block;
+            background: rgba(210, 153, 34, 0.1);
+            border: 1px solid var(--yellow);
+            color: var(--yellow);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        /* Contact */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .contact-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--fg);
+            transition: all 0.2s;
+        }
+
+        .contact-item:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .contact-icon {
+            font-size: 20px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(63, 185, 80, 0.1);
+            border-radius: 8px;
+        }
+
+        .contact-label {
+            font-size: 11px;
+            color: var(--fg);
+            opacity: 0.6;
+        }
+
+        .contact-value {
+            font-size: 13px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            color: var(--fg-bright);
+            font-size: 14px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--fg);
+            font-size: 20px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+        }
+
+        .modal-close:hover {
+            color: var(--red);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .cv-option {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--fg);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cv-option:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .cv-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .cv-option-title {
+            color: var(--fg-bright);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .cv-option-desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--fg);
+            opacity: 0.5;
+        }
+
+        /* Blinking cursor */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--green);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Typing animation */
+        .typing {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 2s steps(40);
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                font-size: 13px;
+            }
+
+            main {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .neofetch-logo {
+                font-size: 8px;
+            }
+
+            .hero-info h1 {
+                font-size: 20px;
+            }
+
+            .terminal-nav {
+                display: none;
+            }
+
+            .terminal-nav.open {
+                display: flex;
+                flex-direction: column;
+                padding: 8px 16px;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .timeline {
+                padding-left: 16px;
+            }
+
+            .timeline-item::before {
+                left: -14px;
+                width: 8px;
+                height: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .neofetch-logo {
+                font-size: 6px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <!-- NAV -->
-    <header class="nav" id="nav">
-      <div class="container nav-inner">
-        <a href="#top" class="brand">
-          <span class="brand-mark">YT</span>
-          <span>timosh_y</span>
-        </a>
-        <nav class="nav-links">
-          <a href="#about">Обо мне</a>
-          <a href="#skills">Навыки</a>
-          <a href="#experience">Опыт</a>
-          <a href="#projects">Проекты</a>
-          <a href="#education">Образование</a>
+</head>
+<body>
+    <!-- Terminal Header -->
+    <header class="terminal-header">
+        <div class="terminal-titlebar">
+            <div class="terminal-buttons">
+                <span class="terminal-btn red"></span>
+                <span class="terminal-btn yellow"></span>
+                <span class="terminal-btn green"></span>
+            </div>
+            <span class="terminal-title">yuriy@portfolio: ~/</span>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰ menu</button>
+        </div>
+        <nav class="terminal-nav" id="terminalNav">
+            <a href="#about" class="nav-link">about</a>
+            <a href="#skills" class="nav-link">skills</a>
+            <a href="#experience" class="nav-link">experience</a>
+            <a href="#projects" class="nav-link">projects</a>
+            <a href="#education" class="nav-link">education</a>
+            <a href="#contact" class="nav-link">contact</a>
         </nav>
-        <a href="#contact" class="nav-cta">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Контакты
-        </a>
-        <button class="nav-toggle" id="navToggle" aria-label="Меню">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="#about">Обо мне</a>
-        <a href="#skills">Навыки</a>
-        <a href="#experience">Опыт</a>
-        <a href="#projects">Проекты</a>
-        <a href="#education">Образование</a>
-        <a href="#contact">Контакты</a>
-      </div>
     </header>
 
-    <!-- HERO -->
-    <main id="top">
-      <section class="hero">
-        <div class="container">
-          <div class="hero-badge">
-            <span class="dot"></span>
-            Открыт к предложениям
-          </div>
-          <h1>Юрий <span>Тимошенко</span></h1>
-          <div class="hero-role">
-            <span id="typed"></span><span class="typed-cursor"></span>
-          </div>
-          <p class="hero-desc">
-            C++ разработчик с <strong>6+ годами опыта</strong> в системном программировании.
-            Пишу быстрый, предсказуемый и поддерживаемый код для высоконагруженных систем —
-            от многопоточных сервисов до embedded-устройств с жёсткими ограничениями по времени.
-          </p>
-          <div class="hero-actions">
-            <a href="#" class="btn btn-primary" onclick="window.print(); return false;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              Скачать CV
-            </a>
-            <a href="#contact" class="btn btn-ghost">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              Связаться
-            </a>
-          </div>
-          <div class="hero-meta">
-            <div class="hero-meta-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Москва · remote
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="top">
+            <pre class="neofetch-logo">
+    ╔══════════════════╗      yuriy@portfolio
+    ║                  ║      ─────────────────
+    ║   ░▒▓█ C++ █▓▒░  ║      OS:      C++17/20
+    ║                  ║      Host:    Минск, Беларусь
+    ║   ╔══╗    ╔══╗   ║      Kernel:  Linux
+    ║   ║  ║    ║  ║   ║      Shell:   bash
+    ║   ╚══╝    ╚══╝   ║      IDE:     VSCode/CLion
+    ║                  ║      Langs:   C++, Python, Asm
+    ╚══════════════════╝      GitHub:  github.com/MrNeBwa
+            </pre>
+            <div class="hero-info">
+                <h1>Юрий Тимошенко</h1>
+                <div class="role">C++ Developer<span class="cursor"></span></div>
+                <div class="status">Открыт к предложениям</div>
+                <div class="location">📍 Минск · remote / hybrid</div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="openCVModal()">⬇ Скачать CV</button>
+                    <a href="#contact" class="btn">✉ Связаться</a>
+                    <a href="https://github.com/MrNeBwa" target="_blank" class="btn">⎇ GitHub</a>
+                </div>
             </div>
-            <div class="hero-meta-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
-              yuriy.timoshenko@proton.me
+        </section>
+
+        <!-- About Section -->
+        <section class="section" id="about">
+            <div class="section-header">
+                <span class="section-number">01 //</span>
+                <h2 class="section-title">Обо мне</h2>
             </div>
-            <div class="hero-meta-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v16M16 4v16M2 8h22M2 16h22"/></svg>
-              github.com/yuriy-timosh
+            <p class="section-subtitle">cat ~/about.txt</p>
+
+            <div class="about-text">
+                <p><span class="comment">// Студент БГУИР, специализация — C++ разработка</span></p>
+                <p>Привет! Меня зовут Юрий, мне 18 лет. Учусь на факультете компьютерных систем и сетей в БГУИР по специальности «Программная инженерия» и параллельно углублённо изучаю C++.</p>
+                <p>Стремлюсь к написанию быстрого и оптимизированного кода. Ценю производительность, чистую архитектуру и модульность. Обладаю широким техническим кругозором и знаю несколько языков программирования, что помогает находить оптимальные решения для разных задач.</p>
+                <p>Сейчас работаю как фрилансер над проектами на C++17/20 с использованием OpenGL и современных инструментов сборки.</p>
             </div>
-          </div>
+
+            <div class="code-block">
+<pre><span class="comment">// whoami.cpp</span>
+<span class="keyword">struct</span> <span class="type">Engineer</span> {
+    std::string_view  name   = <span class="string">"Yuriy Timoshenko"</span>;
+    std::size_t       age    = <span class="number">18</span>;
+    std::string_view  role   = <span class="string">"C++ Developer"</span>;
+    std::string_view  city   = <span class="string">"Minsk"</span>;
+    std::string_view  uni    = <span class="string">"BSUIR, FKП"</span>;
+    bool              remote = <span class="keyword">true</span>;
+    std::string       focus  = <span class="string">"performance & clean code"</span>;
+};</pre>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">2+</div>
+                    <div class="stat-label">года в разработке</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">C2</div>
+                    <div class="stat-label">English</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">C++20</div>
+                    <div class="stat-label">Основной стек</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="section" id="skills">
+            <div class="section-header">
+                <span class="section-number">02 //</span>
+                <h2 class="section-title">Навыки</h2>
+            </div>
+            <p class="section-subtitle">ls ~/skills/</p>
+
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>▸ Языки</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">C++17</span>
+                        <span class="skill-tag">C++20</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">C</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>▸ Графика & API</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">OpenGL</span>
+                        <span class="skill-tag">GLFW</span>
+                        <span class="skill-tag">GLAD</span>
+                        <span class="skill-tag">Unity</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>▸ Инструменты</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">CMake</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Podman</span>
+                        <span class="skill-tag">GCC</span>
+                        <span class="skill-tag">GDB</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>▸ Платформы</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Linux</span>
+                        <span class="skill-tag">Windows</span>
+                        <span class="skill-tag">VS Code</span>
+                        <span class="skill-tag">CLion</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>▸ Концепции</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">ООП</span>
+                        <span class="skill-tag">RAII</span>
+                        <span class="skill-tag">STL</span>
+                        <span class="skill-tag">Алгоритмы</span>
+                        <span class="skill-tag">Структуры данных</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>▸ Языки общения</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Русский (родной)</span>
+                        <span class="skill-tag">English (C2)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="section" id="experience">
+            <div class="section-header">
+                <span class="section-number">03 //</span>
+                <h2 class="section-title">Опыт</h2>
+            </div>
+            <p class="section-subtitle">cat ~/work_history.log</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <div>
+                            <div class="timeline-title">C++ Developer</div>
+                            <div class="timeline-company">Freelance · github.com</div>
+                        </div>
+                        <div class="timeline-date">Сентябрь 2024 — настоящее время</div>
+                    </div>
+                    <p class="timeline-description">Разработка высокопроизводительных приложений на C++ с нуля, с упором на модульность и производительность.</p>
+                    <ul class="timeline-achievements">
+                        <li>Спроектировал архитектуру системы на C++17/20, обеспечив высокую производительность и модульность кода</li>
+                        <li>Интегрировал графические API (OpenGL, GLAD, GLFW) для визуализации данных и рендеринга объектов</li>
+                        <li>Оптимизировал управление памятью с помощью RAII и умных указателей — исключил утечки памяти</li>
+                        <li>Реализовал и профилировал алгоритмы сортировки для быстрого построения маршрутов</li>
+                        <li>Настроил сборку через CMake и контроль версий в Git/GitHub</li>
+                    </ul>
+                    <div class="project-tech">
+                        <span>C++17/20</span>
+                        <span>OpenGL</span>
+                        <span>GLFW</span>
+                        <span>CMake</span>
+                        <span>Git</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section class="section" id="projects">
+            <div class="section-header">
+                <span class="section-number">04 //</span>
+                <h2 class="section-title">Проекты</h2>
+            </div>
+            <p class="section-subtitle">ls ~/projects/</p>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <div class="project-name">
+                            <a href="https://github.com/MrNeBwa" target="_blank">🚌 Система планирования городских пассажирских перевозок</a>
+                        </div>
+                    </div>
+                </div>
+                <p class="timeline-description">Пет-проект: система для визуализации и планирования маршрутов городского транспорта. Уделил особое внимание производительности и эффективной работе с графикой через OpenGL.</p>
+                <ul class="timeline-achievements">
+                    <li>Динамическое обновление сцен транспортных потоков в реальном времени</li>
+                    <li>Рендеринг объектов и визуализация маршрутов через OpenGL</li>
+                    <li>Оптимизированные структуры данных для быстрого построения графиков</li>
+                    <li>Исключены утечки памяти благодаря RAII и умным указателям</li>
+                </ul>
+                <div class="project-tech">
+                    <span>C++20</span>
+                    <span>OpenGL</span>
+                    <span>GLFW</span>
+                    <span>GLAD</span>
+                    <span>STL</span>
+                    <span>CMake</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <div class="project-name">
+                            <a href="https://github.com/MrNeBwa" target="_blank">⎇ Другие проекты на GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <p class="timeline-description">Различные учебные и экспериментальные проекты: алгоритмы, структуры данных, работа с системным программированием на Linux.</p>
+                <div class="project-tech">
+                    <span>C++</span>
+                    <span>Linux</span>
+                    <span>Bash</span>
+                    <span>Docker</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section class="section" id="education">
+            <div class="section-header">
+                <span class="section-number">05 //</span>
+                <h2 class="section-title">Образование</h2>
+            </div>
+            <p class="section-subtitle">cat ~/education.txt</p>
+
+            <div class="education-card">
+                <h3>Белорусский государственный университет информатики и радиоэлектроники (БГУИР)</h3>
+                <div class="faculty">Факультет компьютерных систем и сетей (ФКП) — Программная инженерия</div>
+                <div class="year">2025 — 2029 (ожидается)</div>
+                <span class="status-badge">Неоконченное высшее</span>
+                <p class="timeline-description" style="margin-top: 12px;">Параллельно с учёбой углублённо изучаю C++, современные стандарты языка и best practices в системном программировании.</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="section" id="contact">
+            <div class="section-header">
+                <span class="section-number">06 //</span>
+                <h2 class="section-title">Контакты</h2>
+            </div>
+            <p class="section-subtitle">cat ~/contacts.vcf</p>
+
+            <div class="contact-grid">
+                <a href="https://t.me/INeBwa" target="_blank" class="contact-item">
+                    <div class="contact-icon">✈</div>
+                    <div>
+                        <div class="contact-label">Telegram</div>
+                        <div class="contact-value">@INeBwa</div>
+                    </div>
+                </a>
+                <a href="tel:+375295551017" class="contact-item">
+                    <div class="contact-icon">☎</div>
+                    <div>
+                        <div class="contact-label">Телефон</div>
+                        <div class="contact-value">+375 (29) 555-10-17</div>
+                    </div>
+                </a>
+                <a href="mailto:nebwa.work@gmail.com" class="contact-item">
+                    <div class="contact-icon">✉</div>
+                    <div>
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">nebwa.work@gmail.com</div>
+                    </div>
+                </a>
+                <a href="https://github.com/MrNeBwa" target="_blank" class="contact-item">
+                    <div class="contact-icon">⎇</div>
+                    <div>
+                        <div class="contact-label">GitHub</div>
+                        <div class="contact-value">github.com/MrNeBwa</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="code-block" style="margin-top: 24px;">
+<pre><span class="comment"># Связаться со мной</span>
+<span class="prompt">echo "Готов к сотрудничеству!"</span>
+<span class="prompt">curl -s https://t.me/INeBwa</span>
+<span class="cursor"></span></pre>
+            </div>
+        </section>
+    </main>
+
+    <!-- CV Download Modal -->
+    <div class="modal-overlay" id="cvModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>⬇ Выберите версию CV</h3>
+                <button class="modal-close" onclick="closeCVModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <button class="cv-option" onclick="downloadCV('full')">
+                    <div class="cv-option-title">📄 Полное CV (с опытом работы)</div>
+                    <div class="cv-option-desc">Включает фриланс-опыт, проекты и навыки. Подходит для откликов на вакансии.</div>
+                </button>
+                <button class="cv-option" onclick="downloadCV('short')">
+                    <div class="cv-option-title">📝 Краткое CV</div>
+                    <div class="cv-option-desc">Компактная версия: навыки, образование, контакты. Для быстрого ознакомления.</div>
+                </button>
+                <button class="cv-option" onclick="downloadCV('pdf')">
+                    <div class="cv-option-title">📕 Скачать оригинал PDF</div>
+                    <div class="cv-option-desc">Файл «Тимошенко Юрий Сергеевич-10.pdf» — оригинальное резюме.</div>
+                </button>
+            </div>
         </div>
-      </section>
-<!-- ABOUT -->
-      <section id="about">
-        <div class="container">
-          <div class="section-head reveal">
-            <div class="section-label">01 · Обо мне</div>
-            <h2 class="section-title">Бэкенд на скорости света</h2>
-            <p class="section-sub">
-              Пишу и оптимизирую серверные системы, где каждая миллисекунда решает.
-              Люблю разбираться, как всё устроено под капотом — от аллокаций до кэш-линий.
-            </p>
-          </div>
-          <div class="about-grid">
-            <div class="about-text reveal">
-              <p>
-                Я — <strong>C++ разработчик</strong> с более чем <strong>6 годами опыта</strong>.
-                Специализируюсь на серверной разработке, высоконагруженных системах,
-                многопоточности и оптимизации производительности.
-              </p>
-              <p>
-                В работе ценю <strong>точность и измеримость</strong>: не бывает «быстрее» без
-                бенчмарка. Оптимизирую то, что даёт измеримый эффект — от горячих циклов
-                до структуры данных и стратегий аллокации.
-              </p>
-              <p>
-                Помогаю командам перейти на современный стандарт <strong>C++17/20</strong>,
-                настраиваю CMake-сборку и CI, выстраиваю процессы статического и динамического
-                анализа, чтобы находить проблемы до продакшена, а не после.
-              </p>
-            </div>
-            <div class="about-terminal reveal">
-              <div class="term-bar">
-                <span class="term-dot r"></span>
-                <span class="term-dot y"></span>
-                <span class="term-dot g"></span>
-                <span class="term-title">~/profile.cpp</span>
-              </div>
-              <div class="term-body">
-                <span class="t-com">// кто я такой</span><br>
-                <span class="t-kw">struct</span> <span class="t-fn">Engineer</span> {<br>
-                &nbsp;&nbsp;<span class="t-str">std::string_view</span> role <span class="t-kw">=</span> <span class="t-str">"C++ developer"</span>;<br>
-                &nbsp;&nbsp;<span class="t-str">std::size_t</span> years <span class="t-kw">=</span> <span class="t-num">6</span>;<br>
-                &nbsp;&nbsp;<span class="t-str">bool</span> open_to_relocate <span class="t-kw">=</span> <span class="t-kw">true</span>;<br>
-                &nbsp;&nbsp;<span class="t-kw">auto</span> passion <span class="t-kw">=</span> <span class="t-str">"0 ms latency"</span>;<br>
-                };<br>
-                <br>
-                <span class="t-com">// хочу работать над</span><br>
-                <span class="t-kw">for</span> (<span class="t-kw">auto</span> <span class="t-kw">const</span><span class="t-kw">&</span> task : <span class="t-fn">tasks</span>) {<br>
-                &nbsp;&nbsp;<span class="t-fn">std::cout</span> <span class="t-kw"><<</span> task <span class="t-kw"><<</span> <span class="t-str">"\n"</span>;<br>
+    </div>
+
+    <footer>
+        <p>© 2026 Юрий Тимошенко · Сделано с ❤ и std::cout</p>
+        <p style="margin-top: 4px;">yuriy@portfolio:~$ <span style="color: var(--green);">exit 0</span></p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            document.getElementById('terminalNav').classList.toggle('open');
+        }
+
+        // CV Modal
+        function openCVModal() {
+            document.getElementById('cvModal').classList.add('active');
+        }
+
+        function closeCVModal() {
+            document.getElementById('cvModal').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('cvModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCVModal();
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeCVModal();
+        });
+
+        // Download CV
+        function downloadCV(type) {
+            switch(type) {
+                case 'pdf':
+                    // Ссылка на оригинальный PDF — пользователь должен разместить файл рядом
+                    window.open('Тимошенко%20Юрий%20Сергеевич-10.pdf', '_blank');
+                    break;
+                case 'full':
+                    // Генерируем текстовую версию полного CV
+                    generateCV('full');
+                    break;
+                case 'short':
+                    generateCV('short');
+                    break;
+            }
+            closeCVModal();
+        }
+
+        function generateCV(type) {
+            let content = '';
+            const filename = type === 'full' 
+                ? 'Yuriy_Timoshenko_CV_Full.txt' 
+                : 'Yuriy_Timoshenko_CV_Short.txt';
+
+            if (type === 'full') {
+                content = `
+═══════════════════════════════════════════
+    ТИМОШЕНКО ЮРИЙ СЕРГЕЕВИЧ
+    C++ Developer
+═══════════════════════════════════════════
+
+КОНТАКТЫ
+─────────────────────────────────────────
+📍 Минск, Беларусь
+📞 +375 (29) 555-10-17
+✉  nebwa.work@gmail.com
+✈  Telegram: @INeBwa
+⎇  GitHub: https://github.com/MrNeBwa
+
+Желаемая должность: Разработчик C++
+Тип занятости: полная/частичная/проектная
+Формат: удалённо / гибрид
+
+О СЕБЕ
+─────────────────────────────────────────
+18 лет. Учусь в БГУИР на факультете ФКП
+(Программная инженерия). Углублённо изучаю
+C++ и современные стандарты языка.
+
+Ценности: производительность, чистый код,
+модульность, развитие команды.
+
+Обладаю широким техническим кругозором,
+знаю несколько языков программирования.
+
+ОПЫТ РАБОТЫ
+─────────────────────────────────────────
+Freelance — C++ Developer
+Сентябрь 2024 — настоящее время
+
+• Спроектировал архитектуру системы на
+  C++17/20 с упором на производительность
+• Интегрировал OpenGL/GLFW/GLAD для
+  визуализации данных и рендеринга
+• Оптимизировал управление памятью через
+  RAII и умные указатели (0 утечек)
+• Реализовал алгоритмы сортировки для
+  быстрого построения маршрутов
+• Настроил сборку через CMake, Git
+
+ПРОЕКТЫ
+─────────────────────────────────────────
+🚌 Система планирования городских
+   пассажирских перевозок
+   C++20 | OpenGL | GLFW | CMake
+
+   Пет-проект с динамическим обновлением
+   сцен транспортных потоков, рендерингом
+   объектов и оптимизированными структурами
+   данных.
+
+НАВЫКИ
+─────────────────────────────────────────
+Языки:     C++17/20, Python, Bash, SQL, C
+Графика:   OpenGL, GLFW, GLAD, Unity
+Инструм.:  CMake, Git, Docker, Podman
+ОС:        Linux, Windows
+Концепции: ООП, RAII, STL, Алгоритмы
+Английский: C2 (Advanced)
+
+ОБРАЗОВАНИЕ
+─────────────────────────────────────────
+БГУИР — ФКП, Программная инженерия
+2025 — 2029 (неоконченное высшее)
+
+═══════════════════════════════════════════
+`;
+            } else {
+                content = `
+═══════════════════════════════════════
+    ТИМОШЕНКО ЮРИЙ
+    C++ Developer | Минск
+═══════════════════════════════════════
+
+📞 +375 (29) 555-10-17
+✉  nebwa.work@gmail.com
+✈  @INeBwa
+⎇  github.com/MrNeBwa
+
+НАВЫКИ
+─────────────────────────────────────
+C++17/20 | OpenGL | GLFW | CMake
+Python | Bash | Linux | Git | Docker
+ООП | RAII | STL | Алгоритмы
+
+ОБРАЗОВАНИЕ
+─────────────────────────────────────
+БГУИР, ФКП — Программная инженерия
+2025-2029
+
+ОПЫТ
+─────────────────────────────────────
+Freelance C++ Developer (2024-н.в.)
+• C++17/20 + OpenGL проекты
+• Оптимизация памяти через RAII
+• CMake сборка и CI
+
+═══════════════════════════════════════
+`;
+            }
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Active nav link on scroll
+        const sections = document.querySelectorAll('.section, .hero');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
                 }
-              </div>
-            </div>
-          </div>
-          <div class="stat-row">
-            <div class="stat-card reveal">
-              <div class="num">6<span>+</span></div>
-              <div class="label">лет в разработке</div>
-            </div>
-            <div class="stat-card reveal">
-              <div class="num">12<span>+</span></div>
-              <div class="label">сервисов в проде</div>
-            </div>
-            <div class="stat-card reveal">
-              <div class="num">~40<span>%</span></div>
-              <div class="label">средний прирост скорости</div>
-            </div>
-          </div>
-        </div>
-      </section>
+            });
 
-      <!-- SKILLS -->
-      <section id="skills">
-        <div class="container">
-          <div class="section-head reveal">
-            <div class="section-label">02 · Навыки</div>
-            <h2 class="section-title">Мой стек</h2>
-            <p class="section-sub">
-              Основной язык — C++. Вокруг него — инструменты и практики, которые превращают
-              код в надёжный и поддерживаемый продукт.
-            </p>
-          </div>
-          <div class="skills-grid">
-            <div class="skill-card reveal">
-              <div class="skill-card-head">
-                <div class="skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/></svg></div>
-                <h3>Языки</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="tag">C++20 / 17</span>
-                <span class="tag">C</span>
-                <span class="tag">Assembly (x86)</span>
-                <span class="tag">Python</span>
-                <span class="tag">SQL</span>
-              </div>
-            </div>
-            <div class="skill-card reveal">
-              <div class="skill-card-head">
-                <div class="skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-                <h3>Инструменты</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="tag">CMake</span>
-                <span class="tag">GCC / Clang</span>
-                <span class="tag">GDB</span>
-                <span class="tag">Perf / Valgrind</span>
-                <span class="tag">Git</span>
-                <span class="tag">Docker</span>
-              </div>
-            </div>
-            <div class="skill-card reveal">
-              <div class="skill-card-head">
-                <div class="skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div>
-                <h3>Платформы</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="tag">Linux</span>
-                <span class="tag">Windows</span>
-                <span class="tag">macOS</span>
-                <span class="tag">FreeRTOS</span>
-                <span class="tag">Embedded</span>
-              </div>
-            </div>
-            <div class="skill-card reveal">
-              <div class="skill-card-head">
-                <div class="skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/><path d="M5 22a5 5 0 0 0 9.5-1v-4.5"/></svg></div>
-                <h3>Производительность</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="tag">Multithreading</span>
-                <span class="tag">Lock-free</span>
-                <span class="tag">SIMD</span>
-                <span class="tag">Memory pools</span>
-                <span class="tag">RDMA / TCP</span>
-              </div>
-            </div>
-            <div class="skill-card reveal">
-              <div class="skill-card-head">
-                <div class="skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                <h3>Качество</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="tag">Unit tests</span>
-                <span class="tag">Sanitizers</span>
-                <span class="tag">Static analysis</span>
-                <span class="tag">Code review</span>
-                <span class="tag">CI/CD</span>
-              </div>
-            </div>
-            <div class="skill-card reveal">
-              <div class="skill-card-head">
-                <div class="skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
-                <h3>Архитектура</h3>
-              </div>
-              <div class="skill-tags">
-                <span class="tag">gRPC</span>
-                <span class="tag">PostgreSQL</span>
-                <span class="tag">Redis</span>
-                <span class="tag">Kafka</span>
-                <span class="tag">Microservices</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
 
-      <!-- EXPERIENCE -->
-      <section id="experience">
-        <div class="container">
-          <div class="section-head reveal">
-            <div class="section-label">03 · Опыт</div>
-            <h2 class="section-title">Где я работал</h2>
-          </div>
-          <div class="timeline">
-            <div class="tl-item reveal">
-              <div class="tl-role">Senior C++ Engineer</div>
-              <div class="tl-company">Innotech Systems · Москва</div>
-              <div class="tl-date">2022 — настоящее время</div>
-              <p class="tl-desc">
-                Разрабатываю ядро высоконагруженного сервиса для обработки финансовых транзакций
-                в реальном времени.
-              </p>
-              <ul class="tl-points">
-                <li>Перевёл ключевой путь обработки на lock-free структуры — пропускная способность выросла на 38%.</li>
-                <li>Проектировал систему шардинга и обработки ошибок, обмен сообщениями — gRPC.</li>
-                <li>Сократил время сборки с 18 до 6 минут за счёт модульной CMake-конфигурации и кэша.</li>
-              </ul>
-            </div>
-            <div class="tl-item reveal">
-              <div class="tl-role">C++ Developer</div>
-              <div class="tl-company">Rocket Software · Удалённо</div>
-              <div class="tl-date">2019 — 2022</div>
-              <p class="tl-desc">
-                Работал над системой аналитики и сбором данных в режиме реального времени.
-              </p>
-              <ul class="tl-points">
-                <li>Разработал парсер высокоскоростного сетевого трафика на C++17, обрабатывал ~1 млн сообщений/сек.</li>
-                <li>Внедрил санитайзеры и fuzz-тесты — количество утечек памяти сократилось в 4 раза.</li>
-                <li>Спроектировал структуру данных для кэша в 2 раза быстрее используемой ранее.</li>
-              </ul>
-            </div>
-            <div class="tl-item reveal">
-              <div class="tl-role">Junior C++ Developer</div>
-              <div class="tl-company">Startup Lab · Москва</div>
-              <div class="tl-date">2018 — 2019</div>
-              <p class="tl-desc">
-                Начинал карьеру с написания компонентов для системы IoT-мониторинга.
-              </p>
-              <ul class="tl-points">
-                <li>Реализовал протокол взаимодействия с датчиками через UART и UDP.</li>
-                <li>Автоматизировал сборку и регресс-тесты в CI, что ускорило выход релизов.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+        // Close mobile menu on link click
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('terminalNav').classList.remove('open');
+            });
+        });
+
+        // Console Easter egg
+        console.log('%c Юрий Тимошенко — C++ Developer ', 'background: #0d1117; color: #3fb950; font-size: 16px; font-family: monospace; padding: 8px;');
+        console.log('%c$ echo "Привет! Загляни на github.com/MrNeBwa"', 'color: #58a6ff; font-family: monospace;');
+    </script>
+</body>
+</html>
