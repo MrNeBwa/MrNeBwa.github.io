@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Юрий Тимошенко — C++ разработчик</title>
+    <title>Юрий Тимошенко — C++ / Kotlin / Python разработчик</title>
     <style>
         :root {
             --bg: #0d1117;
@@ -22,15 +22,8 @@
             --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font-mono);
@@ -41,27 +34,14 @@
             overflow-x: hidden;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--green-dim);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--green);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--green); }
 
         /* Header */
         .terminal-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            position: fixed; top: 0; left: 0; right: 0;
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
             z-index: 1000;
@@ -69,23 +49,15 @@
         }
 
         .terminal-titlebar {
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            gap: 8px;
+            display: flex; align-items: center;
+            padding: 8px 16px; gap: 8px;
         }
 
-        .terminal-buttons {
-            display: flex;
-            gap: 6px;
-        }
+        .terminal-buttons { display: flex; gap: 6px; }
 
         .terminal-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
+            width: 12px; height: 12px;
+            border-radius: 50%; border: none; cursor: pointer;
         }
 
         .terminal-btn.red { background: var(--red); }
@@ -93,266 +65,137 @@
         .terminal-btn.green { background: var(--green); }
 
         .terminal-title {
-            flex: 1;
-            text-align: center;
-            font-size: 12px;
-            color: var(--fg);
-            opacity: 0.7;
+            flex: 1; text-align: center;
+            font-size: 12px; color: var(--fg); opacity: 0.7;
         }
 
         /* Navigation */
         .terminal-nav {
-            display: flex;
-            padding: 0 16px;
-            gap: 4px;
-            overflow-x: auto;
-            scrollbar-width: none;
+            display: flex; padding: 0 16px; gap: 4px;
+            overflow-x: auto; scrollbar-width: none;
         }
-
-        .terminal-nav::-webkit-scrollbar {
-            display: none;
-        }
+        .terminal-nav::-webkit-scrollbar { display: none; }
 
         .nav-link {
-            color: var(--fg);
-            text-decoration: none;
-            padding: 8px 12px;
-            font-size: 13px;
-            white-space: nowrap;
+            color: var(--fg); text-decoration: none;
+            padding: 8px 12px; font-size: 13px; white-space: nowrap;
             border-bottom: 2px solid transparent;
             transition: all 0.2s;
         }
-
-        .nav-link:hover {
-            color: var(--green);
-            border-bottom-color: var(--green);
+        .nav-link:hover, .nav-link.active {
+            color: var(--green); border-bottom-color: var(--green);
         }
 
-        .nav-link.active {
-            color: var(--green);
-            border-bottom-color: var(--green);
-        }
-
-        /* Mobile menu */
         .mobile-menu-btn {
             display: none;
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--green);
-            padding: 6px 10px;
-            font-family: var(--font-mono);
-            font-size: 14px;
-            cursor: pointer;
-            margin-left: auto;
+            background: none; border: 1px solid var(--border);
+            color: var(--green); padding: 6px 10px;
+            font-family: var(--font-mono); font-size: 14px;
+            cursor: pointer; margin-left: auto;
         }
 
-        /* Main content */
         main {
-            padding-top: 80px;
-            max-width: 900px;
-            margin: 0 auto;
-            padding-left: 20px;
-            padding-right: 20px;
-            padding-bottom: 60px;
+            padding-top: 80px; max-width: 900px; margin: 0 auto;
+            padding-left: 20px; padding-right: 20px; padding-bottom: 60px;
         }
 
-        /* Hero / Neofetch */
+        /* Hero */
         .hero {
             padding: 40px 0;
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-            flex-wrap: wrap;
+            display: flex; gap: 40px;
+            align-items: flex-start; flex-wrap: wrap;
         }
 
         .neofetch-logo {
-            font-size: 10px;
-            line-height: 1.1;
-            color: var(--green);
-            white-space: pre;
+            font-size: 10px; line-height: 1.1;
+            color: var(--green); white-space: pre;
             flex-shrink: 0;
         }
 
-        .hero-info {
-            flex: 1;
-            min-width: 280px;
-        }
-
-        .hero-info h1 {
-            font-size: 24px;
-            color: var(--fg-bright);
-            margin-bottom: 4px;
-        }
-
-        .hero-info .role {
-            color: var(--green);
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
+        .hero-info { flex: 1; min-width: 280px; }
+        .hero-info h1 { font-size: 24px; color: var(--fg-bright); margin-bottom: 4px; }
+        .hero-info .role { color: var(--green); font-size: 16px; margin-bottom: 16px; }
 
         .hero-info .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
             background: rgba(63, 185, 80, 0.1);
             border: 1px solid var(--green-dim);
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: var(--green);
-            margin-bottom: 16px;
+            padding: 4px 12px; border-radius: 12px;
+            font-size: 12px; color: var(--green); margin-bottom: 16px;
         }
-
         .hero-info .status::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--green);
-            border-radius: 50%;
+            content: ''; width: 8px; height: 8px;
+            background: var(--green); border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
 
         .hero-info .location {
-            color: var(--fg);
-            opacity: 0.7;
-            font-size: 13px;
-            margin-bottom: 20px;
+            color: var(--fg); opacity: 0.7;
+            font-size: 13px; margin-bottom: 20px;
         }
 
-        .hero-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
             padding: 8px 16px;
-            font-family: var(--font-mono);
-            font-size: 13px;
+            font-family: var(--font-mono); font-size: 13px;
             text-decoration: none;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--bg-secondary);
-            color: var(--fg);
+            border: 1px solid var(--border); border-radius: 6px;
+            cursor: pointer; transition: all 0.2s;
+            background: var(--bg-secondary); color: var(--fg);
         }
-
-        .btn:hover {
-            border-color: var(--green);
-            color: var(--green);
-        }
-
+        .btn:hover { border-color: var(--green); color: var(--green); }
         .btn-primary {
             background: var(--green-dim);
-            border-color: var(--green);
-            color: var(--fg-bright);
+            border-color: var(--green); color: var(--fg-bright);
         }
-
-        .btn-primary:hover {
-            background: var(--green);
-            color: var(--bg);
-        }
+        .btn-primary:hover { background: var(--green); color: var(--bg); }
 
         /* Sections */
-        .section {
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-        }
-
+        .section { padding: 40px 0; border-top: 1px solid var(--border); }
         .section-header {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            margin-bottom: 8px;
+            display: flex; align-items: baseline;
+            gap: 12px; margin-bottom: 8px;
         }
-
-        .section-number {
-            color: var(--green);
-            font-size: 14px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            color: var(--fg-bright);
-        }
-
+        .section-number { color: var(--green); font-size: 14px; }
+        .section-title { font-size: 18px; color: var(--fg-bright); }
         .section-subtitle {
-            color: var(--fg);
-            opacity: 0.7;
-            margin-bottom: 24px;
-            font-size: 13px;
+            color: var(--fg); opacity: 0.7;
+            margin-bottom: 24px; font-size: 13px;
         }
 
-        /* Terminal prompt style */
-        .prompt {
-            color: var(--green);
-        }
+        .prompt { color: var(--green); }
+        .prompt::before { content: '$ '; }
 
-        .prompt::before {
-            content: '$ ';
-        }
-
-        /* About section */
-        .about-text {
-            margin-bottom: 20px;
-        }
-
-        .about-text p {
-            margin-bottom: 12px;
-        }
-
-        .about-text .comment {
-            color: var(--green-dim);
-        }
+        .about-text { margin-bottom: 20px; }
+        .about-text p { margin-bottom: 12px; }
+        .about-text .comment { color: var(--green-dim); }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-top: 24px;
+            gap: 16px; margin-top: 24px;
         }
-
         .stat-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 8px; padding: 16px;
             text-align: center;
         }
+        .stat-value { font-size: 28px; color: var(--green); font-weight: bold; }
+        .stat-label { font-size: 12px; color: var(--fg); opacity: 0.7; margin-top: 4px; }
 
-        .stat-value {
-            font-size: 28px;
-            color: var(--green);
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--fg);
-            opacity: 0.7;
-            margin-top: 4px;
-        }
-
-        /* Code block */
         .code-block {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            overflow-x: auto;
-            font-size: 12px;
-            margin: 16px 0;
+            border-radius: 8px; padding: 16px;
+            overflow-x: auto; font-size: 12px; margin: 16px 0;
         }
-
         .code-block .comment { color: #8b949e; }
         .code-block .keyword { color: var(--red); }
         .code-block .string { color: var(--cyan); }
@@ -360,464 +203,216 @@
         .code-block .func { color: var(--blue); }
         .code-block .number { color: var(--purple); }
 
-        /* Skills */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 16px;
         }
-
         .skill-category {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 8px; padding: 16px;
         }
-
         .skill-category h3 {
-            color: var(--green);
-            font-size: 14px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            color: var(--green); font-size: 14px;
+            margin-bottom: 12px; padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
         }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
         .skill-tag {
             background: rgba(63, 185, 80, 0.1);
             border: 1px solid var(--green-dim);
             color: var(--green);
-            padding: 3px 10px;
-            border-radius: 4px;
+            padding: 3px 10px; border-radius: 4px;
             font-size: 12px;
         }
 
-        /* Experience */
-        .timeline {
-            position: relative;
-            padding-left: 24px;
-        }
-
+        .timeline { position: relative; padding-left: 24px; }
         .timeline::before {
-            content: '';
-            position: absolute;
-            left: 6px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border);
+            content: ''; position: absolute;
+            left: 6px; top: 0; bottom: 0;
+            width: 2px; background: var(--border);
         }
-
         .timeline-item {
-            position: relative;
-            margin-bottom: 32px;
+            position: relative; margin-bottom: 32px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 8px; padding: 16px;
         }
-
         .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -22px;
-            top: 20px;
-            width: 10px;
-            height: 10px;
-            background: var(--green);
-            border-radius: 50%;
+            content: ''; position: absolute;
+            left: -22px; top: 20px;
+            width: 10px; height: 10px;
+            background: var(--green); border-radius: 50%;
             border: 2px solid var(--bg);
         }
-
         .timeline-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 8px;
+            display: flex; justify-content: space-between;
+            align-items: flex-start; flex-wrap: wrap;
+            gap: 8px; margin-bottom: 8px;
         }
-
-        .timeline-title {
-            color: var(--fg-bright);
-            font-size: 15px;
-        }
-
-        .timeline-company {
-            color: var(--green);
-            font-size: 13px;
-        }
-
-        .timeline-date {
-            color: var(--fg);
-            opacity: 0.6;
-            font-size: 12px;
-        }
-
+        .timeline-title { color: var(--fg-bright); font-size: 15px; }
+        .timeline-company { color: var(--green); font-size: 13px; }
+        .timeline-date { color: var(--fg); opacity: 0.6; font-size: 12px; }
         .timeline-description {
-            font-size: 13px;
-            color: var(--fg);
-            opacity: 0.8;
-            margin-bottom: 8px;
+            font-size: 13px; color: var(--fg);
+            opacity: 0.8; margin-bottom: 8px;
         }
-
-        .timeline-achievements {
-            list-style: none;
-            font-size: 12px;
-        }
-
+        .timeline-achievements { list-style: none; font-size: 12px; }
         .timeline-achievements li {
-            padding: 4px 0;
-            padding-left: 16px;
-            position: relative;
+            padding: 4px 0; padding-left: 16px; position: relative;
         }
-
         .timeline-achievements li::before {
-            content: '▸';
-            color: var(--green);
-            position: absolute;
-            left: 0;
+            content: '▸'; color: var(--green);
+            position: absolute; left: 0;
         }
 
-        /* Projects */
         .project-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 16px;
-            transition: border-color 0.2s;
+            border-radius: 8px; padding: 20px;
+            margin-bottom: 16px; transition: border-color 0.2s;
         }
+        .project-card:hover { border-color: var(--green); }
+        .project-name { color: var(--fg-bright); font-size: 16px; margin-bottom: 8px; }
+        .project-name a { color: inherit; text-decoration: none; }
+        .project-name a:hover { color: var(--green); }
 
-        .project-card:hover {
-            border-color: var(--green);
-        }
-
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .project-name {
-            color: var(--fg-bright);
-            font-size: 16px;
-        }
-
-        .project-name a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .project-name a:hover {
-            color: var(--green);
-        }
-
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
+        .project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
         .project-tech span {
             background: rgba(88, 166, 255, 0.1);
             border: 1px solid rgba(88, 166, 255, 0.3);
             color: var(--blue);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 2px 8px; border-radius: 4px; font-size: 11px;
         }
 
-        /* Education */
         .education-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 8px; padding: 20px;
         }
-
-        .education-card h3 {
-            color: var(--fg-bright);
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .education-card .faculty {
-            color: var(--green);
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-
-        .education-card .year {
-            color: var(--fg);
-            opacity: 0.6;
-            font-size: 12px;
-        }
-
+        .education-card h3 { color: var(--fg-bright); font-size: 15px; margin-bottom: 4px; }
+        .education-card .faculty { color: var(--green); font-size: 13px; margin-bottom: 4px; }
+        .education-card .year { color: var(--fg); opacity: 0.6; font-size: 12px; }
         .education-card .status-badge {
             display: inline-block;
             background: rgba(210, 153, 34, 0.1);
             border: 1px solid var(--yellow);
             color: var(--yellow);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-top: 8px;
+            padding: 2px 8px; border-radius: 4px;
+            font-size: 11px; margin-top: 8px;
         }
 
-        /* Contact */
         .contact-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 12px;
         }
-
         .contact-item {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--fg);
+            border-radius: 8px; padding: 16px;
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--fg);
             transition: all 0.2s;
         }
-
-        .contact-item:hover {
-            border-color: var(--green);
-            color: var(--green);
-        }
-
+        .contact-item:hover { border-color: var(--green); color: var(--green); }
         .contact-icon {
-            font-size: 20px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(63, 185, 80, 0.1);
-            border-radius: 8px;
+            font-size: 20px; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(63, 185, 80, 0.1); border-radius: 8px;
         }
-
-        .contact-label {
-            font-size: 11px;
-            color: var(--fg);
-            opacity: 0.6;
-        }
-
-        .contact-value {
-            font-size: 13px;
-        }
+        .contact-label { font-size: 11px; color: var(--fg); opacity: 0.6; }
+        .contact-value { font-size: 13px; }
 
         /* Modal */
         .modal-overlay {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.8);
             z-index: 2000;
-            align-items: center;
-            justify-content: center;
+            align-items: center; justify-content: center;
             padding: 20px;
         }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
+        .modal-overlay.active { display: flex; }
         .modal {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 12px;
-            max-width: 500px;
-            width: 100%;
-            overflow: hidden;
+            max-width: 500px; width: 100%; overflow: hidden;
         }
-
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 16px 20px;
             border-bottom: 1px solid var(--border);
         }
-
-        .modal-header h3 {
-            color: var(--fg-bright);
-            font-size: 14px;
-        }
-
+        .modal-header h3 { color: var(--fg-bright); font-size: 14px; }
         .modal-close {
-            background: none;
-            border: none;
-            color: var(--fg);
-            font-size: 20px;
-            cursor: pointer;
-            font-family: var(--font-mono);
+            background: none; border: none; color: var(--fg);
+            font-size: 20px; cursor: pointer; font-family: var(--font-mono);
         }
-
-        .modal-close:hover {
-            color: var(--red);
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
+        .modal-close:hover { color: var(--red); }
+        .modal-body { padding: 20px; }
         .cv-option {
-            display: block;
-            width: 100%;
-            padding: 16px;
+            display: block; width: 100%; padding: 16px;
             margin-bottom: 12px;
             background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             text-align: left;
-            font-family: var(--font-mono);
-            font-size: 13px;
+            font-family: var(--font-mono); font-size: 13px;
             color: var(--fg);
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
         }
+        .cv-option:hover { border-color: var(--green); color: var(--green); }
+        .cv-option:last-child { margin-bottom: 0; }
+        .cv-option-title { color: var(--fg-bright); font-size: 14px; margin-bottom: 4px; }
+        .cv-option-desc { font-size: 12px; opacity: 0.7; }
 
-        .cv-option:hover {
-            border-color: var(--green);
-            color: var(--green);
-        }
-
-        .cv-option:last-child {
-            margin-bottom: 0;
-        }
-
-        .cv-option-title {
-            color: var(--fg-bright);
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .cv-option-desc {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        /* Footer */
         footer {
-            text-align: center;
-            padding: 24px;
+            text-align: center; padding: 24px;
             border-top: 1px solid var(--border);
-            font-size: 12px;
-            color: var(--fg);
-            opacity: 0.5;
+            font-size: 12px; color: var(--fg); opacity: 0.5;
         }
 
-        /* Blinking cursor */
         .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 16px;
+            display: inline-block; width: 8px; height: 16px;
             background: var(--green);
             animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 4px;
+            vertical-align: middle; margin-left: 4px;
         }
-
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
 
-        /* Typing animation */
-        .typing {
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typing 2s steps(40);
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                font-size: 13px;
-            }
-
-            main {
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-
-            .hero {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .neofetch-logo {
-                font-size: 8px;
-            }
-
-            .hero-info h1 {
-                font-size: 20px;
-            }
-
-            .terminal-nav {
-                display: none;
-            }
-
+            body { font-size: 13px; }
+            main { padding-left: 12px; padding-right: 12px; }
+            .hero { flex-direction: column; align-items: center; text-align: center; }
+            .neofetch-logo { font-size: 8px; }
+            .hero-info h1 { font-size: 20px; }
+            .terminal-nav { display: none; }
             .terminal-nav.open {
-                display: flex;
-                flex-direction: column;
-                padding: 8px 16px;
+                display: flex; flex-direction: column; padding: 8px 16px;
             }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .hero-buttons {
-                justify-content: center;
-            }
-
-            .timeline {
-                padding-left: 16px;
-            }
-
+            .mobile-menu-btn { display: block; }
+            .hero-buttons { justify-content: center; }
+            .timeline { padding-left: 16px; }
             .timeline-item::before {
-                left: -14px;
-                width: 8px;
-                height: 8px;
+                left: -14px; width: 8px; height: 8px;
             }
         }
 
         @media (max-width: 480px) {
-            .neofetch-logo {
-                font-size: 6px;
-            }
-
-            .section-header {
-                flex-direction: column;
-                gap: 4px;
-            }
+            .neofetch-logo { font-size: 6px; }
+            .section-header { flex-direction: column; gap: 4px; }
         }
     </style>
 </head>
 <body>
-    <!-- Terminal Header -->
     <header class="terminal-header">
         <div class="terminal-titlebar">
             <div class="terminal-buttons">
@@ -839,22 +434,21 @@
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero" id="top">
             <pre class="neofetch-logo">
     ╔══════════════════╗      yuriy@portfolio
     ║                  ║      ─────────────────
-    ║   ░▒▓█ C++ █▓▒░  ║      OS:      C++17/20
+    ║   ░▒▓█ C++ █▓▒░  ║      OS:      C++20 / Kotlin / Python
     ║                  ║      Host:    Минск, Беларусь
     ║   ╔══╗    ╔══╗   ║      Kernel:  Linux
     ║   ║  ║    ║  ║   ║      Shell:   bash
-    ║   ╚══╝    ╚══╝   ║      IDE:     VSCode/CLion
-    ║                  ║      Langs:   C++, Python, Asm
+    ║   ╚══╝    ╚══╝   ║      IDE:     VSCode/CLion/IntelliJ
+    ║                  ║      Backend: FastAPI · Spring Boot
     ╚══════════════════╝      GitHub:  github.com/MrNeBwa
             </pre>
             <div class="hero-info">
                 <h1>Юрий Тимошенко</h1>
-                <div class="role">C++ Developer<span class="cursor"></span></div>
+                <div class="role">C++ / Kotlin / Python Developer<span class="cursor"></span></div>
                 <div class="status">Открыт к предложениям</div>
                 <div class="location">📍 Минск · remote / hybrid</div>
                 <div class="hero-buttons">
@@ -865,7 +459,6 @@
             </div>
         </section>
 
-        <!-- About Section -->
         <section class="section" id="about">
             <div class="section-header">
                 <span class="section-number">01 //</span>
@@ -874,10 +467,10 @@
             <p class="section-subtitle">cat ~/about.txt</p>
 
             <div class="about-text">
-                <p><span class="comment">// Студент БГУИР, специализация — C++ разработка</span></p>
-                <p>Привет! Меня зовут Юрий, мне 18 лет. Учусь на факультете компьютерных систем и сетей в БГУИР по специальности «Программная инженерия» и параллельно углублённо изучаю C++.</p>
-                <p>Стремлюсь к написанию быстрого и оптимизированного кода. Ценю производительность, чистую архитектуру и модульность. Обладаю широким техническим кругозором и знаю несколько языков программирования, что помогает находить оптимальные решения для разных задач.</p>
-                <p>Сейчас работаю как фрилансер над проектами на C++17/20 с использованием OpenGL и современных инструментов сборки.</p>
+                <p><span class="comment">// Студент БГУИР, специализация — backend и системное программирование</span></p>
+                <p>Привет! Меня зовут Юрий, мне 18 лет. Учусь на факультете компьютерных систем и сетей в БГУИР по специальности «Программная инженерия» и параллельно работаю над backend- и системными проектами.</p>
+                <p>Основной стек — C++17/20 для высокопроизводительных задач, Kotlin для backend-сервисов и Python с FastAPI для REST API. Люблю разбираться, как всё устроено под капотом — от аллокаций до кэш-линий.</p>
+                <p>Ценю производительность, чистую архитектуру и модульность. Обладаю широким техническим кругозором и знаю несколько языков программирования, что помогает находить оптимальные решения для разных задач.</p>
             </div>
 
             <div class="code-block">
@@ -885,9 +478,9 @@
 <span class="keyword">struct</span> <span class="type">Engineer</span> {
     std::string_view  name   = <span class="string">"Yuriy Timoshenko"</span>;
     std::size_t       age    = <span class="number">18</span>;
-    std::string_view  role   = <span class="string">"C++ Developer"</span>;
+    std::string_view  role   = <span class="string">"C++ / Kotlin / Python Developer"</span>;
     std::string_view  city   = <span class="string">"Minsk"</span>;
-    std::string_view  uni    = <span class="string">"BSUIR, FKП"</span>;
+    std::string_view  uni    = <span class="string">"BSUIR, FKP"</span>;
     bool              remote = <span class="keyword">true</span>;
     std::string       focus  = <span class="string">"performance & clean code"</span>;
 };</pre>
@@ -903,13 +496,12 @@
                     <div class="stat-label">English</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">C++20</div>
-                    <div class="stat-label">Основной стек</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">языка в стеке</div>
                 </div>
             </div>
         </section>
 
-        <!-- Skills Section -->
         <section class="section" id="skills">
             <div class="section-header">
                 <span class="section-number">02 //</span>
@@ -923,10 +515,22 @@
                     <div class="skill-tags">
                         <span class="skill-tag">C++17</span>
                         <span class="skill-tag">C++20</span>
+                        <span class="skill-tag">Kotlin</span>
                         <span class="skill-tag">Python</span>
                         <span class="skill-tag">Bash</span>
                         <span class="skill-tag">SQL</span>
                         <span class="skill-tag">C</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>▸ Backend & API</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">FastAPI</span>
+                        <span class="skill-tag">Spring Boot</span>
+                        <span class="skill-tag">Ktor</span>
+                        <span class="skill-tag">Pydantic</span>
+                        <span class="skill-tag">SQLAlchemy</span>
+                        <span class="skill-tag">REST</span>
                     </div>
                 </div>
                 <div class="skill-category">
@@ -939,6 +543,14 @@
                     </div>
                 </div>
                 <div class="skill-category">
+                    <h3>▸ Базы данных</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">Redis</span>
+                        <span class="skill-tag">SQLite</span>
+                    </div>
+                </div>
+                <div class="skill-category">
                     <h3>▸ Инструменты</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">CMake</span>
@@ -947,6 +559,7 @@
                         <span class="skill-tag">Podman</span>
                         <span class="skill-tag">GCC</span>
                         <span class="skill-tag">GDB</span>
+                        <span class="skill-tag">GitHub Actions</span>
                     </div>
                 </div>
                 <div class="skill-category">
@@ -956,6 +569,7 @@
                         <span class="skill-tag">Windows</span>
                         <span class="skill-tag">VS Code</span>
                         <span class="skill-tag">CLion</span>
+                        <span class="skill-tag">IntelliJ IDEA</span>
                     </div>
                 </div>
                 <div class="skill-category">
@@ -964,6 +578,7 @@
                         <span class="skill-tag">ООП</span>
                         <span class="skill-tag">RAII</span>
                         <span class="skill-tag">STL</span>
+                        <span class="skill-tag">Coroutines</span>
                         <span class="skill-tag">Алгоритмы</span>
                         <span class="skill-tag">Структуры данных</span>
                     </div>
@@ -978,7 +593,6 @@
             </div>
         </section>
 
-        <!-- Experience Section -->
         <section class="section" id="experience">
             <div class="section-header">
                 <span class="section-number">03 //</span>
@@ -990,12 +604,40 @@
                 <div class="timeline-item">
                     <div class="timeline-header">
                         <div>
+                            <div class="timeline-title">Kotlin / Python (FastAPI) Developer</div>
+                            <div class="timeline-company">Freelance</div>
+                        </div>
+                        <div class="timeline-date">Март 2025 — настоящее время</div>
+                    </div>
+                    <p class="timeline-description">Разработка backend-сервисов и REST API для пет-проектов и заказных задач. Основной стек — Kotlin (Spring Boot / Ktor) и Python (FastAPI).</p>
+                    <ul class="timeline-achievements">
+                        <li>Проектирую REST API на FastAPI с асинхронной обработкой запросов, валидацией через Pydantic и автодокументацией через Swagger/OpenAPI</li>
+                        <li>Пишу backend-модули на Kotlin с использованием корутин и Spring Boot для микросервисной архитектуры</li>
+                        <li>Работаю с PostgreSQL и Redis, настраиваю миграции через Alembic / Flyway</li>
+                        <li>Покрытие тестами через pytest и JUnit5, интеграция тестов в CI через GitHub Actions</li>
+                        <li>Контейнеризация сервисов в Docker, деплой через docker-compose на VPS</li>
+                    </ul>
+                    <div class="project-tech">
+                        <span>Kotlin</span>
+                        <span>Spring Boot</span>
+                        <span>Ktor</span>
+                        <span>Python</span>
+                        <span>FastAPI</span>
+                        <span>PostgreSQL</span>
+                        <span>Redis</span>
+                        <span>Docker</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <div>
                             <div class="timeline-title">C++ Developer</div>
                             <div class="timeline-company">Freelance · github.com</div>
                         </div>
                         <div class="timeline-date">Сентябрь 2024 — настоящее время</div>
                     </div>
-                    <p class="timeline-description">Разработка высокопроизводительных приложений на C++ с нуля, с упором на модульность и производительность.</p>
+                    <p class="timeline-description">Разработка высокопроизводительных приложений на C++17/20 с нуля, с упором на модульность, производительность и графику.</p>
                     <ul class="timeline-achievements">
                         <li>Спроектировал архитектуру системы на C++17/20, обеспечив высокую производительность и модульность кода</li>
                         <li>Интегрировал графические API (OpenGL, GLAD, GLFW) для визуализации данных и рендеринга объектов</li>
@@ -1014,7 +656,6 @@
             </div>
         </section>
 
-        <!-- Projects Section -->
         <section class="section" id="projects">
             <div class="section-header">
                 <span class="section-number">04 //</span>
@@ -1023,14 +664,10 @@
             <p class="section-subtitle">ls ~/projects/</p>
 
             <div class="project-card">
-                <div class="project-header">
-                    <div>
-                        <div class="project-name">
-                            <a href="https://github.com/MrNeBwa" target="_blank">🚌 Система планирования городских пассажирских перевозок</a>
-                        </div>
-                    </div>
+                <div class="project-name">
+                    <a href="https://github.com/MrNeBwa" target="_blank">🚌 Система планирования городских пассажирских перевозок</a>
                 </div>
-                <p class="timeline-description">Пет-проект: система для визуализации и планирования маршрутов городского транспорта. Уделил особое внимание производительности и эффективной работе с графикой через OpenGL.</p>
+                <p class="timeline-description">Пет-проект: система для визуализации и планирования маршрутов городского транспорта с упором на производительность и графику.</p>
                 <ul class="timeline-achievements">
                     <li>Динамическое обновление сцен транспортных потоков в реальном времени</li>
                     <li>Рендеринг объектов и визуализация маршрутов через OpenGL</li>
@@ -1048,24 +685,41 @@
             </div>
 
             <div class="project-card">
-                <div class="project-header">
-                    <div>
-                        <div class="project-name">
-                            <a href="https://github.com/MrNeBwa" target="_blank">⎇ Другие проекты на GitHub</a>
-                        </div>
-                    </div>
+                <div class="project-name">
+                    <a href="https://github.com/MrNeBwa" target="_blank">🔧 REST API сервисы (Kotlin / FastAPI)</a>
+                </div>
+                <p class="timeline-description">Backend-сервисы с авторизацией (JWT), валидацией входных данных, кэшированием в Redis и контейнеризацией.</p>
+                <ul class="timeline-achievements">
+                    <li>Асинхронная обработка запросов на FastAPI</li>
+                    <li>Микросервисы на Kotlin + Spring Boot с корутинами</li>
+                    <li>CI/CD через GitHub Actions, деплой в Docker</li>
+                </ul>
+                <div class="project-tech">
+                    <span>Python</span>
+                    <span>FastAPI</span>
+                    <span>Kotlin</span>
+                    <span>Spring Boot</span>
+                    <span>PostgreSQL</span>
+                    <span>Redis</span>
+                    <span>Docker</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-name">
+                    <a href="https://github.com/MrNeBwa" target="_blank">⎇ Другие проекты на GitHub</a>
                 </div>
                 <p class="timeline-description">Различные учебные и экспериментальные проекты: алгоритмы, структуры данных, работа с системным программированием на Linux.</p>
                 <div class="project-tech">
                     <span>C++</span>
+                    <span>Python</span>
+                    <span>Kotlin</span>
                     <span>Linux</span>
                     <span>Bash</span>
-                    <span>Docker</span>
                 </div>
             </div>
         </section>
 
-        <!-- Education Section -->
         <section class="section" id="education">
             <div class="section-header">
                 <span class="section-number">05 //</span>
@@ -1078,11 +732,10 @@
                 <div class="faculty">Факультет компьютерных систем и сетей (ФКП) — Программная инженерия</div>
                 <div class="year">2025 — 2029 (ожидается)</div>
                 <span class="status-badge">Неоконченное высшее</span>
-                <p class="timeline-description" style="margin-top: 12px;">Параллельно с учёбой углублённо изучаю C++, современные стандарты языка и best practices в системном программировании.</p>
+                <p class="timeline-description" style="margin-top: 12px;">Параллельно с учёбой углублённо изучаю C++, современные стандарты языка и best practices в системном и backend-программировании.</p>
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section class="section" id="contact">
             <div class="section-header">
                 <span class="section-number">06 //</span>
@@ -1094,7 +747,7 @@
                 <a href="https://t.me/INeBwa" target="_blank" class="contact-item">
                     <div class="contact-icon">✈</div>
                     <div>
-                        <div class="contact-label">Telegram</div>
+                        <div class="contact-label">Telegram (предпочтительно)</div>
                         <div class="contact-value">@INeBwa</div>
                     </div>
                 </a>
@@ -1130,7 +783,6 @@
         </section>
     </main>
 
-    <!-- CV Download Modal -->
     <div class="modal-overlay" id="cvModal">
         <div class="modal">
             <div class="modal-header">
@@ -1138,18 +790,10 @@
                 <button class="modal-close" onclick="closeCVModal()">×</button>
             </div>
             <div class="modal-body">
-                <button class="cv-option" onclick="downloadCV('full')">
-                    <div class="cv-option-title">📄 Полное CV (с опытом работы)</div>
-                    <div class="cv-option-desc">Включает фриланс-опыт, проекты и навыки. Подходит для откликов на вакансии.</div>
-                </button>
-                <button class="cv-option" onclick="downloadCV('short')">
-                    <div class="cv-option-title">📝 Краткое CV</div>
-                    <div class="cv-option-desc">Компактная версия: навыки, образование, контакты. Для быстрого ознакомления.</div>
-                </button>
-                <button class="cv-option" onclick="downloadCV('pdf')">
-                    <div class="cv-option-title">📕 Скачать оригинал PDF</div>
-                    <div class="cv-option-desc">Файл «Тимошенко Юрий Сергеевич-10.pdf» — оригинальное резюме.</div>
-                </button>
+                <a href="Тимошенко%20Юрий%20Сергеевич-с++.pdf" download class="cv-option">
+                    <div class="cv-option-title">📕 Оригинал PDF</div>
+                    <div class="cv-option-desc">Файл «Тимошенко Юрий Сергеевич-10.pdf» из корневой папки.</div>
+                </a>
             </div>
         </div>
     </div>
@@ -1160,176 +804,24 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
         function toggleMenu() {
             document.getElementById('terminalNav').classList.toggle('open');
         }
-
-        // CV Modal
         function openCVModal() {
             document.getElementById('cvModal').classList.add('active');
         }
-
         function closeCVModal() {
             document.getElementById('cvModal').classList.remove('active');
         }
-
-        // Close modal on overlay click
         document.getElementById('cvModal').addEventListener('click', function(e) {
             if (e.target === this) closeCVModal();
         });
-
-        // Close modal on Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeCVModal();
         });
 
-        // Download CV
-        function downloadCV(type) {
-            switch(type) {
-                case 'pdf':
-                    // Ссылка на оригинальный PDF — пользователь должен разместить файл рядом
-                    window.open('Тимошенко%20Юрий%20Сергеевич-10.pdf', '_blank');
-                    break;
-                case 'full':
-                    // Генерируем текстовую версию полного CV
-                    generateCV('full');
-                    break;
-                case 'short':
-                    generateCV('short');
-                    break;
-            }
-            closeCVModal();
-        }
-
-        function generateCV(type) {
-            let content = '';
-            const filename = type === 'full' 
-                ? 'Yuriy_Timoshenko_CV_Full.txt' 
-                : 'Yuriy_Timoshenko_CV_Short.txt';
-
-            if (type === 'full') {
-                content = `
-═══════════════════════════════════════════
-    ТИМОШЕНКО ЮРИЙ СЕРГЕЕВИЧ
-    C++ Developer
-═══════════════════════════════════════════
-
-КОНТАКТЫ
-─────────────────────────────────────────
-📍 Минск, Беларусь
-📞 +375 (29) 555-10-17
-✉  nebwa.work@gmail.com
-✈  Telegram: @INeBwa
-⎇  GitHub: https://github.com/MrNeBwa
-
-Желаемая должность: Разработчик C++
-Тип занятости: полная/частичная/проектная
-Формат: удалённо / гибрид
-
-О СЕБЕ
-─────────────────────────────────────────
-18 лет. Учусь в БГУИР на факультете ФКП
-(Программная инженерия). Углублённо изучаю
-C++ и современные стандарты языка.
-
-Ценности: производительность, чистый код,
-модульность, развитие команды.
-
-Обладаю широким техническим кругозором,
-знаю несколько языков программирования.
-
-ОПЫТ РАБОТЫ
-─────────────────────────────────────────
-Freelance — C++ Developer
-Сентябрь 2024 — настоящее время
-
-• Спроектировал архитектуру системы на
-  C++17/20 с упором на производительность
-• Интегрировал OpenGL/GLFW/GLAD для
-  визуализации данных и рендеринга
-• Оптимизировал управление памятью через
-  RAII и умные указатели (0 утечек)
-• Реализовал алгоритмы сортировки для
-  быстрого построения маршрутов
-• Настроил сборку через CMake, Git
-
-ПРОЕКТЫ
-─────────────────────────────────────────
-🚌 Система планирования городских
-   пассажирских перевозок
-   C++20 | OpenGL | GLFW | CMake
-
-   Пет-проект с динамическим обновлением
-   сцен транспортных потоков, рендерингом
-   объектов и оптимизированными структурами
-   данных.
-
-НАВЫКИ
-─────────────────────────────────────────
-Языки:     C++17/20, Python, Bash, SQL, C
-Графика:   OpenGL, GLFW, GLAD, Unity
-Инструм.:  CMake, Git, Docker, Podman
-ОС:        Linux, Windows
-Концепции: ООП, RAII, STL, Алгоритмы
-Английский: C2 (Advanced)
-
-ОБРАЗОВАНИЕ
-─────────────────────────────────────────
-БГУИР — ФКП, Программная инженерия
-2025 — 2029 (неоконченное высшее)
-
-═══════════════════════════════════════════
-`;
-            } else {
-                content = `
-═══════════════════════════════════════
-    ТИМОШЕНКО ЮРИЙ
-    C++ Developer | Минск
-═══════════════════════════════════════
-
-📞 +375 (29) 555-10-17
-✉  nebwa.work@gmail.com
-✈  @INeBwa
-⎇  github.com/MrNeBwa
-
-НАВЫКИ
-─────────────────────────────────────
-C++17/20 | OpenGL | GLFW | CMake
-Python | Bash | Linux | Git | Docker
-ООП | RAII | STL | Алгоритмы
-
-ОБРАЗОВАНИЕ
-─────────────────────────────────────
-БГУИР, ФКП — Программная инженерия
-2025-2029
-
-ОПЫТ
-─────────────────────────────────────
-Freelance C++ Developer (2024-н.в.)
-• C++17/20 + OpenGL проекты
-• Оптимизация памяти через RAII
-• CMake сборка и CI
-
-═══════════════════════════════════════
-`;
-            }
-
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // Active nav link on scroll
         const sections = document.querySelectorAll('.section, .hero');
         const navLinks = document.querySelectorAll('.nav-link');
-
         window.addEventListener('scroll', () => {
             let current = '';
             sections.forEach(section => {
@@ -1338,7 +830,6 @@ Freelance C++ Developer (2024-н.в.)
                     current = section.getAttribute('id');
                 }
             });
-
             navLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === '#' + current) {
@@ -1347,15 +838,13 @@ Freelance C++ Developer (2024-н.в.)
             });
         });
 
-        // Close mobile menu on link click
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 document.getElementById('terminalNav').classList.remove('open');
             });
         });
 
-        // Console Easter egg
-        console.log('%c Юрий Тимошенко — C++ Developer ', 'background: #0d1117; color: #3fb950; font-size: 16px; font-family: monospace; padding: 8px;');
+        console.log('%c Юрий Тимошенко — C++ / Kotlin / Python Developer ', 'background: #0d1117; color: #3fb950; font-size: 16px; font-family: monospace; padding: 8px;');
         console.log('%c$ echo "Привет! Загляни на github.com/MrNeBwa"', 'color: #58a6ff; font-family: monospace;');
     </script>
 </body>
