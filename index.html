@@ -65,9 +65,22 @@
         .terminal-btn.green { background: var(--green); }
 
         .terminal-title {
-            flex: 1; text-align: center;
+            text-align: center;
             font-size: 12px; color: var(--fg); opacity: 0.7;
+            margin-left: 16px;
         }
+
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex; gap: 6px; margin-left: auto;
+        }
+        .lang-btn {
+            background: transparent; border: 1px solid var(--border); color: var(--fg);
+            font-family: var(--font-mono); font-size: 11px; padding: 2px 6px;
+            border-radius: 4px; cursor: pointer; transition: all 0.2s;
+        }
+        .lang-btn:hover { border-color: var(--green); color: var(--green); }
+        .lang-btn.active { background: var(--green-dim); border-color: var(--green); color: var(--fg-bright); }
 
         /* Navigation */
         .terminal-nav {
@@ -77,7 +90,7 @@
         .terminal-nav::-webkit-scrollbar { display: none; }
 
         .nav-link {
-            color: var(--fg); text-decoration: none;
+            color: var(--fg); text-decoration: none; cursor: pointer;
             padding: 8px 12px; font-size: 13px; white-space: nowrap;
             border-bottom: 2px solid transparent;
             transition: all 0.2s;
@@ -89,9 +102,9 @@
         .mobile-menu-btn {
             display: none;
             background: none; border: 1px solid var(--border);
-            color: var(--green); padding: 6px 10px;
-            font-family: var(--font-mono); font-size: 14px;
-            cursor: pointer; margin-left: auto;
+            color: var(--green); padding: 4px 8px;
+            font-family: var(--font-mono); font-size: 12px;
+            cursor: pointer; margin-left: 8px; border-radius: 4px;
         }
 
         main {
@@ -409,6 +422,7 @@
         @media (max-width: 480px) {
             .neofetch-logo { font-size: 6px; }
             .section-header { flex-direction: column; gap: 4px; }
+            .terminal-title { display: none; }
         }
     </style>
 </head>
@@ -420,23 +434,32 @@
                 <span class="terminal-btn yellow"></span>
                 <span class="terminal-btn green"></span>
             </div>
-            <span class="terminal-title">yuriy@portfolio: ~/</span>
+            <span class="terminal-title">nebwa@portfolio: ~/</span>
+            
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+                <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="uk" onclick="setLanguage('uk')">UK</button>
+            </div>
+
             <button class="mobile-menu-btn" onclick="toggleMenu()">☰ menu</button>
         </div>
         <nav class="terminal-nav" id="terminalNav">
-            <a href="#about" class="nav-link">about</a>
-            <a href="#skills" class="nav-link">skills</a>
-            <a href="#experience" class="nav-link">experience</a>
-            <a href="#projects" class="nav-link">projects</a>
-            <a href="#education" class="nav-link">education</a>
-            <a href="#contact" class="nav-link">contact</a>
+            <a data-target="about" class="nav-link">about</a>
+            <a data-target="skills" class="nav-link">skills</a>
+            <a data-target="experience" class="nav-link">experience</a>
+            <a data-target="projects" class="nav-link">projects</a>
+            <a data-target="education" class="nav-link">education</a>
+            <a data-target="contact" class="nav-link">contact</a>
         </nav>
     </header>
 
     <main>
-        <section class="hero" id="top">
-            <pre class="neofetch-logo">
-    ╔══════════════════╗      yuriy@portfolio
+        <!-- ============================== RUSSIAN CONTENT ============================== -->
+        <div id="content-ru">
+            <section class="hero" id="ru-top">
+                <pre class="neofetch-logo">
+    ╔══════════════════╗      nebwa@portfolio
     ║                  ║      ─────────────────
     ║   ░▒▓█ C++ █▓▒░  ║      OS:      C++20 / Kotlin / Python
     ║                  ║      Host:    Минск, Беларусь
@@ -445,36 +468,36 @@
     ║   ╚══╝    ╚══╝   ║      IDE:     VSCode/CLion/IntelliJ
     ║                  ║      Backend: FastAPI · Spring Boot
     ╚══════════════════╝      GitHub:  github.com/MrNeBwa
-            </pre>
-            <div class="hero-info">
-                <h1>Юрий Тимошенко</h1>
-                <div class="role">C++ / Kotlin / Python Developer<span class="cursor"></span></div>
-                <div class="status">Открыт к предложениям</div>
-                <div class="location">📍 Минск · remote / hybrid</div>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" onclick="openCVModal()">⬇ Скачать CV</button>
-                    <a href="#contact" class="btn">✉ Связаться</a>
-                    <a href="https://github.com/MrNeBwa" target="_blank" class="btn">⎇ GitHub</a>
+                </pre>
+                <div class="hero-info">
+                    <h1>Юрий Тимошенко</h1>
+                    <div class="role">C++ / Kotlin / Python Developer<span class="cursor"></span></div>
+                    <div class="status">Открыт к предложениям</div>
+                    <div class="location">📍 Минск · remote / hybrid</div>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="openCVModal()">⬇ Скачать CV</button>
+                        <a href="#ru-contact" class="btn" onclick="scrollToTarget('contact')">✉ Связаться</a>
+                        <a href="https://github.com/MrNeBwa" target="_blank" class="btn">⎇ GitHub</a>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section" id="about">
-            <div class="section-header">
-                <span class="section-number">01 //</span>
-                <h2 class="section-title">Обо мне</h2>
-            </div>
-            <p class="section-subtitle">cat ~/about.txt</p>
+            <section class="section" id="ru-about">
+                <div class="section-header">
+                    <span class="section-number">01 //</span>
+                    <h2 class="section-title">Обо мне</h2>
+                </div>
+                <p class="section-subtitle">cat ~/about.txt</p>
 
-            <div class="about-text">
-                <p><span class="comment">// Студент БГУИР, специализация — backend и системное программирование</span></p>
-                <p>Привет! Меня зовут Юрий, мне 18 лет. Учусь на факультете компьютерных систем и сетей в БГУИР по специальности «Программная инженерия» и параллельно работаю над backend- и системными проектами.</p>
-                <p>Основной стек — C++17/20 для высокопроизводительных задач, Kotlin для backend-сервисов и Python с FastAPI для REST API. Люблю разбираться, как всё устроено под капотом — от аллокаций до кэш-линий.</p>
-                <p>Ценю производительность, чистую архитектуру и модульность. Обладаю широким техническим кругозором и знаю несколько языков программирования, что помогает находить оптимальные решения для разных задач.</p>
-            </div>
+                <div class="about-text">
+                    <p><span class="comment">// Студент БГУИР, специализация — backend и системное программирование</span></p>
+                    <p>Привет! Меня зовут Юрий, мне 18 лет. Учусь на факультете компьютерных систем и сетей в БГУИР по специальности «Программная инженерия» и параллельно работаю над backend- и системными проектами.</p>
+                    <p>Основной стек — C++17/20 для высокопроизводительных задач, Kotlin для backend-сервисов и Python с FastAPI для REST API. Люблю разбираться, как всё устроено под капотом — от аллокаций до кэш-линий.</p>
+                    <p>Ценю производительность, чистую архитектуру и модульность. Обладаю широким техническим кругозором и знаю несколько языков программирования, что помогает находить оптимальные решения для разных задач.</p>
+                </div>
 
-            <div class="code-block">
-<pre><span class="comment">// whoami.cpp</span>
+                <div class="code-block">
+    <pre><span class="comment">// whoami.cpp</span>
 <span class="keyword">struct</span> <span class="type">Engineer</span> {
     std::string_view  name   = <span class="string">"Yuriy Timoshenko"</span>;
     std::size_t       age    = <span class="number">18</span>;
@@ -484,305 +507,621 @@
     bool              remote = <span class="keyword">true</span>;
     std::string       focus  = <span class="string">"performance & clean code"</span>;
 };</pre>
-            </div>
+                </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">2+</div>
-                    <div class="stat-label">года в разработке</div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value">2+</div><div class="stat-label">года в разработке</div></div>
+                    <div class="stat-card"><div class="stat-value">C2</div><div class="stat-label">English</div></div>
+                    <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">языка в стеке</div></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">C2</div>
-                    <div class="stat-label">English</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">языка в стеке</div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section" id="skills">
-            <div class="section-header">
-                <span class="section-number">02 //</span>
-                <h2 class="section-title">Навыки</h2>
-            </div>
-            <p class="section-subtitle">ls ~/skills/</p>
+            <section class="section" id="ru-skills">
+                <div class="section-header">
+                    <span class="section-number">02 //</span>
+                    <h2 class="section-title">Навыки</h2>
+                </div>
+                <p class="section-subtitle">ls ~/skills/</p>
 
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>▸ Языки</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">C++17</span>
-                        <span class="skill-tag">C++20</span>
-                        <span class="skill-tag">Kotlin</span>
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">Bash</span>
-                        <span class="skill-tag">SQL</span>
-                        <span class="skill-tag">C</span>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>▸ Языки</h3>
+                        <div class="skill-tags"><span class="skill-tag">C++17</span><span class="skill-tag">C++20</span><span class="skill-tag">Kotlin</span><span class="skill-tag">Python</span><span class="skill-tag">Bash</span><span class="skill-tag">SQL</span><span class="skill-tag">C</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Backend & API</h3>
+                        <div class="skill-tags"><span class="skill-tag">FastAPI</span><span class="skill-tag">Spring Boot</span><span class="skill-tag">Ktor</span><span class="skill-tag">Pydantic</span><span class="skill-tag">SQLAlchemy</span><span class="skill-tag">REST</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Графика & API</h3>
+                        <div class="skill-tags"><span class="skill-tag">OpenGL</span><span class="skill-tag">GLFW</span><span class="skill-tag">GLAD</span><span class="skill-tag">Unity</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Базы данных</h3>
+                        <div class="skill-tags"><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Redis</span><span class="skill-tag">SQLite</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Инструменты</h3>
+                        <div class="skill-tags"><span class="skill-tag">CMake</span><span class="skill-tag">Git</span><span class="skill-tag">Docker</span><span class="skill-tag">Podman</span><span class="skill-tag">GCC</span><span class="skill-tag">GDB</span><span class="skill-tag">GitHub Actions</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Платформы</h3>
+                        <div class="skill-tags"><span class="skill-tag">Linux</span><span class="skill-tag">Windows</span><span class="skill-tag">VS Code</span><span class="skill-tag">CLion</span><span class="skill-tag">IntelliJ IDEA</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Концепции</h3>
+                        <div class="skill-tags"><span class="skill-tag">ООП</span><span class="skill-tag">RAII</span><span class="skill-tag">STL</span><span class="skill-tag">Coroutines</span><span class="skill-tag">Алгоритмы</span><span class="skill-tag">Структуры данных</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Языки общения</h3>
+                        <div class="skill-tags"><span class="skill-tag">Русский (родной)</span><span class="skill-tag">English (C2)</span></div>
                     </div>
                 </div>
-                <div class="skill-category">
-                    <h3>▸ Backend & API</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">FastAPI</span>
-                        <span class="skill-tag">Spring Boot</span>
-                        <span class="skill-tag">Ktor</span>
-                        <span class="skill-tag">Pydantic</span>
-                        <span class="skill-tag">SQLAlchemy</span>
-                        <span class="skill-tag">REST</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>▸ Графика & API</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">OpenGL</span>
-                        <span class="skill-tag">GLFW</span>
-                        <span class="skill-tag">GLAD</span>
-                        <span class="skill-tag">Unity</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>▸ Базы данных</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">PostgreSQL</span>
-                        <span class="skill-tag">Redis</span>
-                        <span class="skill-tag">SQLite</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>▸ Инструменты</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">CMake</span>
-                        <span class="skill-tag">Git</span>
-                        <span class="skill-tag">Docker</span>
-                        <span class="skill-tag">Podman</span>
-                        <span class="skill-tag">GCC</span>
-                        <span class="skill-tag">GDB</span>
-                        <span class="skill-tag">GitHub Actions</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>▸ Платформы</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Linux</span>
-                        <span class="skill-tag">Windows</span>
-                        <span class="skill-tag">VS Code</span>
-                        <span class="skill-tag">CLion</span>
-                        <span class="skill-tag">IntelliJ IDEA</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>▸ Концепции</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">ООП</span>
-                        <span class="skill-tag">RAII</span>
-                        <span class="skill-tag">STL</span>
-                        <span class="skill-tag">Coroutines</span>
-                        <span class="skill-tag">Алгоритмы</span>
-                        <span class="skill-tag">Структуры данных</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>▸ Языки общения</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Русский (родной)</span>
-                        <span class="skill-tag">English (C2)</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section" id="experience">
-            <div class="section-header">
-                <span class="section-number">03 //</span>
-                <h2 class="section-title">Опыт</h2>
-            </div>
-            <p class="section-subtitle">cat ~/work_history.log</p>
+            <section class="section" id="ru-experience">
+                <div class="section-header">
+                    <span class="section-number">03 //</span>
+                    <h2 class="section-title">Опыт</h2>
+                </div>
+                <p class="section-subtitle">cat ~/work_history.log</p>
 
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <div class="timeline-title">Kotlin / Python (FastAPI) Developer</div>
-                            <div class="timeline-company">Freelance</div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div>
+                                <div class="timeline-title">Kotlin / Python (FastAPI) Developer</div>
+                                <div class="timeline-company">Freelance</div>
+                            </div>
+                            <div class="timeline-date">Март 2025 — настоящее время</div>
                         </div>
-                        <div class="timeline-date">Март 2025 — настоящее время</div>
+                        <p class="timeline-description">Разработка backend-сервисов и REST API для пет-проектов и заказных задач. Основной стек — Kotlin (Spring Boot / Ktor) и Python (FastAPI).</p>
+                        <ul class="timeline-achievements">
+                            <li>Проектирую REST API на FastAPI с асинхронной обработкой запросов, валидацией через Pydantic и автодокументацией через Swagger/OpenAPI</li>
+                            <li>Пишу backend-модули на Kotlin с использованием корутин и Spring Boot для микросервисной архитектуры</li>
+                            <li>Работаю с PostgreSQL и Redis, настраиваю миграции через Alembic / Flyway</li>
+                            <li>Покрытие тестами через pytest и JUnit5, интеграция тестов в CI через GitHub Actions</li>
+                            <li>Контейнеризация сервисов в Docker, деплой через docker-compose на VPS</li>
+                        </ul>
+                        <div class="project-tech"><span>Kotlin</span><span>Spring Boot</span><span>Ktor</span><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span></div>
                     </div>
-                    <p class="timeline-description">Разработка backend-сервисов и REST API для пет-проектов и заказных задач. Основной стек — Kotlin (Spring Boot / Ktor) и Python (FastAPI).</p>
-                    <ul class="timeline-achievements">
-                        <li>Проектирую REST API на FastAPI с асинхронной обработкой запросов, валидацией через Pydantic и автодокументацией через Swagger/OpenAPI</li>
-                        <li>Пишу backend-модули на Kotlin с использованием корутин и Spring Boot для микросервисной архитектуры</li>
-                        <li>Работаю с PostgreSQL и Redis, настраиваю миграции через Alembic / Flyway</li>
-                        <li>Покрытие тестами через pytest и JUnit5, интеграция тестов в CI через GitHub Actions</li>
-                        <li>Контейнеризация сервисов в Docker, деплой через docker-compose на VPS</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span>Kotlin</span>
-                        <span>Spring Boot</span>
-                        <span>Ktor</span>
-                        <span>Python</span>
-                        <span>FastAPI</span>
-                        <span>PostgreSQL</span>
-                        <span>Redis</span>
-                        <span>Docker</span>
-                    </div>
-                </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <div class="timeline-title">C++ Developer</div>
-                            <div class="timeline-company">Freelance · github.com</div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div>
+                                <div class="timeline-title">C++ Developer</div>
+                                <div class="timeline-company">Freelance · github.com</div>
+                            </div>
+                            <div class="timeline-date">Сентябрь 2024 — настоящее время</div>
                         </div>
-                        <div class="timeline-date">Сентябрь 2024 — настоящее время</div>
+                        <p class="timeline-description">Разработка высокопроизводительных приложений на C++17/20 с нуля, с упором на модульность, производительность и графику.</p>
+                        <ul class="timeline-achievements">
+                            <li>Спроектировал архитектуру системы на C++17/20, обеспечив высокую производительность и модульность кода</li>
+                            <li>Интегрировал графические API (OpenGL, GLAD, GLFW) для визуализации данных и рендеринга объектов</li>
+                            <li>Оптимизировал управление памятью с помощью RAII и умных указателей — исключил утечки памяти</li>
+                            <li>Реализовал и профилировал алгоритмы сортировки для быстрого построения маршрутов</li>
+                            <li>Настроил сборку через CMake и контроль версий в Git/GitHub</li>
+                        </ul>
+                        <div class="project-tech"><span>C++17/20</span><span>OpenGL</span><span>GLFW</span><span>CMake</span><span>Git</span></div>
                     </div>
-                    <p class="timeline-description">Разработка высокопроизводительных приложений на C++17/20 с нуля, с упором на модульность, производительность и графику.</p>
+                </div>
+            </section>
+
+            <section class="section" id="ru-projects">
+                <div class="section-header">
+                    <span class="section-number">04 //</span>
+                    <h2 class="section-title">Проекты</h2>
+                </div>
+                <p class="section-subtitle">ls ~/projects/</p>
+
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">🚌 Система планирования городских пассажирских перевозок</a></div>
+                    <p class="timeline-description">Пет-проект: система для визуализации и планирования маршрутов городского транспорта с упором на производительность и графику.</p>
                     <ul class="timeline-achievements">
-                        <li>Спроектировал архитектуру системы на C++17/20, обеспечив высокую производительность и модульность кода</li>
-                        <li>Интегрировал графические API (OpenGL, GLAD, GLFW) для визуализации данных и рендеринга объектов</li>
-                        <li>Оптимизировал управление памятью с помощью RAII и умных указателей — исключил утечки памяти</li>
-                        <li>Реализовал и профилировал алгоритмы сортировки для быстрого построения маршрутов</li>
-                        <li>Настроил сборку через CMake и контроль версий в Git/GitHub</li>
+                        <li>Динамическое обновление сцен транспортных потоков в реальном времени</li>
+                        <li>Рендеринг объектов и визуализация маршрутов через OpenGL</li>
+                        <li>Оптимизированные структуры данных для быстрого построения графиков</li>
+                        <li>Исключены утечки памяти благодаря RAII и умным указателям</li>
                     </ul>
-                    <div class="project-tech">
-                        <span>C++17/20</span>
-                        <span>OpenGL</span>
-                        <span>GLFW</span>
-                        <span>CMake</span>
-                        <span>Git</span>
-                    </div>
+                    <div class="project-tech"><span>C++20</span><span>OpenGL</span><span>GLFW</span><span>GLAD</span><span>STL</span><span>CMake</span></div>
                 </div>
-            </div>
-        </section>
 
-        <section class="section" id="projects">
-            <div class="section-header">
-                <span class="section-number">04 //</span>
-                <h2 class="section-title">Проекты</h2>
-            </div>
-            <p class="section-subtitle">ls ~/projects/</p>
-
-            <div class="project-card">
-                <div class="project-name">
-                    <a href="https://github.com/MrNeBwa" target="_blank">🚌 Система планирования городских пассажирских перевозок</a>
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">🔧 REST API сервисы (Kotlin / FastAPI)</a></div>
+                    <p class="timeline-description">Backend-сервисы с авторизацией (JWT), валидацией входных данных, кэшированием в Redis и контейнеризацией.</p>
+                    <ul class="timeline-achievements">
+                        <li>Асинхронная обработка запросов на FastAPI</li>
+                        <li>Микросервисы на Kotlin + Spring Boot с корутинами</li>
+                        <li>CI/CD через GitHub Actions, деплой в Docker</li>
+                    </ul>
+                    <div class="project-tech"><span>Python</span><span>FastAPI</span><span>Kotlin</span><span>Spring Boot</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span></div>
                 </div>
-                <p class="timeline-description">Пет-проект: система для визуализации и планирования маршрутов городского транспорта с упором на производительность и графику.</p>
-                <ul class="timeline-achievements">
-                    <li>Динамическое обновление сцен транспортных потоков в реальном времени</li>
-                    <li>Рендеринг объектов и визуализация маршрутов через OpenGL</li>
-                    <li>Оптимизированные структуры данных для быстрого построения графиков</li>
-                    <li>Исключены утечки памяти благодаря RAII и умным указателям</li>
-                </ul>
-                <div class="project-tech">
-                    <span>C++20</span>
-                    <span>OpenGL</span>
-                    <span>GLFW</span>
-                    <span>GLAD</span>
-                    <span>STL</span>
-                    <span>CMake</span>
+
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">⎇ Другие проекты на GitHub</a></div>
+                    <p class="timeline-description">Различные учебные и экспериментальные проекты: алгоритмы, структуры данных, работа с системным программированием на Linux.</p>
+                    <div class="project-tech"><span>C++</span><span>Python</span><span>Kotlin</span><span>Linux</span><span>Bash</span></div>
                 </div>
-            </div>
+            </section>
 
-            <div class="project-card">
-                <div class="project-name">
-                    <a href="https://github.com/MrNeBwa" target="_blank">🔧 REST API сервисы (Kotlin / FastAPI)</a>
+            <section class="section" id="ru-education">
+                <div class="section-header">
+                    <span class="section-number">05 //</span>
+                    <h2 class="section-title">Образование</h2>
                 </div>
-                <p class="timeline-description">Backend-сервисы с авторизацией (JWT), валидацией входных данных, кэшированием в Redis и контейнеризацией.</p>
-                <ul class="timeline-achievements">
-                    <li>Асинхронная обработка запросов на FastAPI</li>
-                    <li>Микросервисы на Kotlin + Spring Boot с корутинами</li>
-                    <li>CI/CD через GitHub Actions, деплой в Docker</li>
-                </ul>
-                <div class="project-tech">
-                    <span>Python</span>
-                    <span>FastAPI</span>
-                    <span>Kotlin</span>
-                    <span>Spring Boot</span>
-                    <span>PostgreSQL</span>
-                    <span>Redis</span>
-                    <span>Docker</span>
+                <p class="section-subtitle">cat ~/education.txt</p>
+
+                <div class="education-card">
+                    <h3>Белорусский государственный университет информатики и радиоэлектроники (БГУИР)</h3>
+                    <div class="faculty">Факультет компьютерных систем и сетей (ФКП) — Программная инженерия</div>
+                    <div class="year">2025 — 2029 (ожидается)</div>
+                    <span class="status-badge">Неоконченное высшее</span>
+                    <p class="timeline-description" style="margin-top: 12px;">Параллельно с учёбой углублённо изучаю C++, современные стандарты языка и best practices в системном и backend-программировании.</p>
                 </div>
-            </div>
+            </section>
 
-            <div class="project-card">
-                <div class="project-name">
-                    <a href="https://github.com/MrNeBwa" target="_blank">⎇ Другие проекты на GitHub</a>
+            <section class="section" id="ru-contact">
+                <div class="section-header">
+                    <span class="section-number">06 //</span>
+                    <h2 class="section-title">Контакты</h2>
                 </div>
-                <p class="timeline-description">Различные учебные и экспериментальные проекты: алгоритмы, структуры данных, работа с системным программированием на Linux.</p>
-                <div class="project-tech">
-                    <span>C++</span>
-                    <span>Python</span>
-                    <span>Kotlin</span>
-                    <span>Linux</span>
-                    <span>Bash</span>
+                <p class="section-subtitle">cat ~/contacts.vcf</p>
+
+                <div class="contact-grid">
+                    <a href="https://t.me/INeBwa" target="_blank" class="contact-item">
+                        <div class="contact-icon">✈</div>
+                        <div><div class="contact-label">Telegram (предпочтительно)</div><div class="contact-value">@INeBwa</div></div>
+                    </a>
+                    <a href="tel:+375295551017" class="contact-item">
+                        <div class="contact-icon">☎</div>
+                        <div><div class="contact-label">Телефон</div><div class="contact-value">+375 (29) 555-10-17</div></div>
+                    </a>
+                    <a href="mailto:nebwa.work@gmail.com" class="contact-item">
+                        <div class="contact-icon">✉</div>
+                        <div><div class="contact-label">Email</div><div class="contact-value">nebwa.work@gmail.com</div></div>
+                    </a>
+                    <a href="https://github.com/MrNeBwa" target="_blank" class="contact-item">
+                        <div class="contact-icon">⎇</div>
+                        <div><div class="contact-label">GitHub</div><div class="contact-value">github.com/MrNeBwa</div></div>
+                    </a>
                 </div>
-            </div>
-        </section>
 
-        <section class="section" id="education">
-            <div class="section-header">
-                <span class="section-number">05 //</span>
-                <h2 class="section-title">Образование</h2>
-            </div>
-            <p class="section-subtitle">cat ~/education.txt</p>
-
-            <div class="education-card">
-                <h3>Белорусский государственный университет информатики и радиоэлектроники (БГУИР)</h3>
-                <div class="faculty">Факультет компьютерных систем и сетей (ФКП) — Программная инженерия</div>
-                <div class="year">2025 — 2029 (ожидается)</div>
-                <span class="status-badge">Неоконченное высшее</span>
-                <p class="timeline-description" style="margin-top: 12px;">Параллельно с учёбой углублённо изучаю C++, современные стандарты языка и best practices в системном и backend-программировании.</p>
-            </div>
-        </section>
-
-        <section class="section" id="contact">
-            <div class="section-header">
-                <span class="section-number">06 //</span>
-                <h2 class="section-title">Контакты</h2>
-            </div>
-            <p class="section-subtitle">cat ~/contacts.vcf</p>
-
-            <div class="contact-grid">
-                <a href="https://t.me/INeBwa" target="_blank" class="contact-item">
-                    <div class="contact-icon">✈</div>
-                    <div>
-                        <div class="contact-label">Telegram (предпочтительно)</div>
-                        <div class="contact-value">@INeBwa</div>
-                    </div>
-                </a>
-                <a href="tel:+375295551017" class="contact-item">
-                    <div class="contact-icon">☎</div>
-                    <div>
-                        <div class="contact-label">Телефон</div>
-                        <div class="contact-value">+375 (29) 555-10-17</div>
-                    </div>
-                </a>
-                <a href="mailto:nebwa.work@gmail.com" class="contact-item">
-                    <div class="contact-icon">✉</div>
-                    <div>
-                        <div class="contact-label">Email</div>
-                        <div class="contact-value">nebwa.work@gmail.com</div>
-                    </div>
-                </a>
-                <a href="https://github.com/MrNeBwa" target="_blank" class="contact-item">
-                    <div class="contact-icon">⎇</div>
-                    <div>
-                        <div class="contact-label">GitHub</div>
-                        <div class="contact-value">github.com/MrNeBwa</div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="code-block" style="margin-top: 24px;">
-<pre><span class="comment"># Связаться со мной</span>
+                <div class="code-block" style="margin-top: 24px;">
+    <pre><span class="comment"># Связаться со мной</span>
 <span class="prompt">echo "Готов к сотрудничеству!"</span>
 <span class="prompt">curl -s https://t.me/INeBwa</span>
 <span class="cursor"></span></pre>
-            </div>
-        </section>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ============================== ENGLISH CONTENT ============================== -->
+        <div id="content-en" style="display: none;">
+            <section class="hero" id="en-top">
+                <pre class="neofetch-logo">
+    ╔══════════════════╗      nebwa@portfolio
+    ║                  ║      ─────────────────
+    ║   ░▒▓█ C++ █▓▒░  ║      OS:      C++20 / Kotlin / Python
+    ║                  ║      Host:    Minsk, Belarus
+    ║   ╔══╗    ╔══╗   ║      Kernel:  Linux
+    ║   ║  ║    ║  ║   ║      Shell:   bash
+    ║   ╚══╝    ╚══╝   ║      IDE:     VSCode/CLion/IntelliJ
+    ║                  ║      Backend: FastAPI · Spring Boot
+    ╚══════════════════╝      GitHub:  github.com/MrNeBwa
+                </pre>
+                <div class="hero-info">
+                    <h1>Yuriy Timoshenko</h1>
+                    <div class="role">C++ / Kotlin / Python Developer<span class="cursor"></span></div>
+                    <div class="status">Open to opportunities</div>
+                    <div class="location">📍 Minsk · remote / hybrid</div>
+                    <div class="hero-buttons">
+                        <!-- Removed Download CV button per instructions -->
+                        <a href="#en-contact" class="btn" onclick="scrollToTarget('contact')">✉ Contact</a>
+                        <a href="https://github.com/MrNeBwa" target="_blank" class="btn">⎇ GitHub</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="en-about">
+                <div class="section-header"><span class="section-number">01 //</span><h2 class="section-title">About me</h2></div>
+                <p class="section-subtitle">cat ~/about.txt</p>
+
+                <div class="about-text">
+                    <p><span class="comment">// BSUIR student, specializing in backend and systems programming</span></p>
+                    <p>Hi! My name is Yuriy, I'm 18. I study at the Faculty of Computer Systems and Networks at BSUIR, majoring in Software Engineering, and work on backend and system projects on the side.</p>
+                    <p>Core stack — C++17/20 for high-performance tasks, Kotlin for backend services, and Python with FastAPI for REST APIs. I love figuring out how things work under the hood — from allocations to cache lines.</p>
+                    <p>I value performance, clean architecture, and modularity. I have a broad technical background and know several programming languages, which helps me find optimal solutions for various tasks.</p>
+                </div>
+
+                <div class="code-block">
+    <pre><span class="comment">// whoami.cpp</span>
+<span class="keyword">struct</span> <span class="type">Engineer</span> {
+    std::string_view  name   = <span class="string">"Yuriy Timoshenko"</span>;
+    std::size_t       age    = <span class="number">18</span>;
+    std::string_view  role   = <span class="string">"C++ / Kotlin / Python Developer"</span>;
+    std::string_view  city   = <span class="string">"Minsk"</span>;
+    std::string_view  uni    = <span class="string">"BSUIR, FCSN"</span>;
+    bool              remote = <span class="keyword">true</span>;
+    std::string       focus  = <span class="string">"performance & clean code"</span>;
+};</pre>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value">2+</div><div class="stat-label">years in dev</div></div>
+                    <div class="stat-card"><div class="stat-value">C2</div><div class="stat-label">English</div></div>
+                    <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">stack languages</div></div>
+                </div>
+            </section>
+
+            <section class="section" id="en-skills">
+                <div class="section-header"><span class="section-number">02 //</span><h2 class="section-title">Skills</h2></div>
+                <p class="section-subtitle">ls ~/skills/</p>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>▸ Languages</h3>
+                        <div class="skill-tags"><span class="skill-tag">C++17</span><span class="skill-tag">C++20</span><span class="skill-tag">Kotlin</span><span class="skill-tag">Python</span><span class="skill-tag">Bash</span><span class="skill-tag">SQL</span><span class="skill-tag">C</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Backend & API</h3>
+                        <div class="skill-tags"><span class="skill-tag">FastAPI</span><span class="skill-tag">Spring Boot</span><span class="skill-tag">Ktor</span><span class="skill-tag">Pydantic</span><span class="skill-tag">SQLAlchemy</span><span class="skill-tag">REST</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Graphics & API</h3>
+                        <div class="skill-tags"><span class="skill-tag">OpenGL</span><span class="skill-tag">GLFW</span><span class="skill-tag">GLAD</span><span class="skill-tag">Unity</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Databases</h3>
+                        <div class="skill-tags"><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Redis</span><span class="skill-tag">SQLite</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Tools</h3>
+                        <div class="skill-tags"><span class="skill-tag">CMake</span><span class="skill-tag">Git</span><span class="skill-tag">Docker</span><span class="skill-tag">Podman</span><span class="skill-tag">GCC</span><span class="skill-tag">GDB</span><span class="skill-tag">GitHub Actions</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Platforms</h3>
+                        <div class="skill-tags"><span class="skill-tag">Linux</span><span class="skill-tag">Windows</span><span class="skill-tag">VS Code</span><span class="skill-tag">CLion</span><span class="skill-tag">IntelliJ IDEA</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Concepts</h3>
+                        <div class="skill-tags"><span class="skill-tag">OOP</span><span class="skill-tag">RAII</span><span class="skill-tag">STL</span><span class="skill-tag">Coroutines</span><span class="skill-tag">Algorithms</span><span class="skill-tag">Data Structures</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Communication</h3>
+                        <div class="skill-tags"><span class="skill-tag">Russian (Native)</span><span class="skill-tag">English (C2)</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="en-experience">
+                <div class="section-header"><span class="section-number">03 //</span><h2 class="section-title">Experience</h2></div>
+                <p class="section-subtitle">cat ~/work_history.log</p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div><div class="timeline-title">Kotlin / Python (FastAPI) Developer</div><div class="timeline-company">Freelance</div></div>
+                            <div class="timeline-date">March 2025 — Present</div>
+                        </div>
+                        <p class="timeline-description">Developing backend services and REST APIs for pet projects and custom tasks. Core stack — Kotlin (Spring Boot / Ktor) and Python (FastAPI).</p>
+                        <ul class="timeline-achievements">
+                            <li>Designing REST APIs on FastAPI with asynchronous request processing, validation via Pydantic, and auto-documentation via Swagger/OpenAPI.</li>
+                            <li>Writing backend modules in Kotlin using coroutines and Spring Boot for microservice architecture.</li>
+                            <li>Working with PostgreSQL and Redis, setting up migrations via Alembic / Flyway.</li>
+                            <li>Test coverage using pytest and JUnit5, test integration in CI via GitHub Actions.</li>
+                            <li>Containerization of services in Docker, deployment via docker-compose on VPS.</li>
+                        </ul>
+                        <div class="project-tech"><span>Kotlin</span><span>Spring Boot</span><span>Ktor</span><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span></div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div><div class="timeline-title">C++ Developer</div><div class="timeline-company">Freelance · github.com</div></div>
+                            <div class="timeline-date">September 2024 — Present</div>
+                        </div>
+                        <p class="timeline-description">Developing high-performance C++17/20 applications from scratch, focusing on modularity, performance, and graphics.</p>
+                        <ul class="timeline-achievements">
+                            <li>Designed system architecture in C++17/20, ensuring high performance and code modularity.</li>
+                            <li>Integrated graphics APIs (OpenGL, GLAD, GLFW) for data visualization and object rendering.</li>
+                            <li>Optimized memory management using RAII and smart pointers — eliminated memory leaks.</li>
+                            <li>Implemented and profiled sorting algorithms for fast route building.</li>
+                            <li>Configured builds via CMake and version control in Git/GitHub.</li>
+                        </ul>
+                        <div class="project-tech"><span>C++17/20</span><span>OpenGL</span><span>GLFW</span><span>CMake</span><span>Git</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="en-projects">
+                <div class="section-header"><span class="section-number">04 //</span><h2 class="section-title">Projects</h2></div>
+                <p class="section-subtitle">ls ~/projects/</p>
+                
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">🚌 Urban Passenger Transport Planning System</a></div>
+                    <p class="timeline-description">Pet project: a system for visualizing and planning urban transport routes with a focus on performance and graphics.</p>
+                    <ul class="timeline-achievements">
+                        <li>Dynamic update of traffic scenes in real time.</li>
+                        <li>Rendering objects and visualizing routes via OpenGL.</li>
+                        <li>Optimized data structures for fast graph building.</li>
+                        <li>Eliminated memory leaks thanks to RAII and smart pointers.</li>
+                    </ul>
+                    <div class="project-tech"><span>C++20</span><span>OpenGL</span><span>GLFW</span><span>GLAD</span><span>STL</span><span>CMake</span></div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">🔧 REST API Services (Kotlin / FastAPI)</a></div>
+                    <p class="timeline-description">Backend services with authorization (JWT), input validation, Redis caching, and containerization.</p>
+                    <ul class="timeline-achievements">
+                        <li>Asynchronous request processing on FastAPI.</li>
+                        <li>Microservices on Kotlin + Spring Boot with coroutines.</li>
+                        <li>CI/CD via GitHub Actions, deployment in Docker.</li>
+                    </ul>
+                    <div class="project-tech"><span>Python</span><span>FastAPI</span><span>Kotlin</span><span>Spring Boot</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span></div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">⎇ Other Projects on GitHub</a></div>
+                    <p class="timeline-description">Various educational and experimental projects: algorithms, data structures, working with systems programming on Linux.</p>
+                    <div class="project-tech"><span>C++</span><span>Python</span><span>Kotlin</span><span>Linux</span><span>Bash</span></div>
+                </div>
+            </section>
+
+            <section class="section" id="en-education">
+                <div class="section-header"><span class="section-number">05 //</span><h2 class="section-title">Education</h2></div>
+                <p class="section-subtitle">cat ~/education.txt</p>
+                <div class="education-card">
+                    <h3>Belarusian State University of Informatics and Radioelectronics (BSUIR)</h3>
+                    <div class="faculty">Faculty of Computer Systems and Networks (FCSN) — Software Engineering</div>
+                    <div class="year">2025 — 2029 (expected)</div>
+                    <span class="status-badge">Incomplete higher education</span>
+                    <p class="timeline-description" style="margin-top: 12px;">Along with my studies, I am deeply studying C++, modern language standards, and best practices in system and backend programming.</p>
+                </div>
+            </section>
+
+            <section class="section" id="en-contact">
+                <div class="section-header"><span class="section-number">06 //</span><h2 class="section-title">Contacts</h2></div>
+                <p class="section-subtitle">cat ~/contacts.vcf</p>
+                <div class="contact-grid">
+                    <a href="https://t.me/INeBwa" target="_blank" class="contact-item">
+                        <div class="contact-icon">✈</div>
+                        <div><div class="contact-label">Telegram (preferred)</div><div class="contact-value">@INeBwa</div></div>
+                    </a>
+                    <a href="tel:+375295551017" class="contact-item">
+                        <div class="contact-icon">☎</div>
+                        <div><div class="contact-label">Phone</div><div class="contact-value">+375 (29) 555-10-17</div></div>
+                    </a>
+                    <a href="mailto:nebwa.work@gmail.com" class="contact-item">
+                        <div class="contact-icon">✉</div>
+                        <div><div class="contact-label">Email</div><div class="contact-value">nebwa.work@gmail.com</div></div>
+                    </a>
+                    <a href="https://github.com/MrNeBwa" target="_blank" class="contact-item">
+                        <div class="contact-icon">⎇</div>
+                        <div><div class="contact-label">GitHub</div><div class="contact-value">github.com/MrNeBwa</div></div>
+                    </a>
+                </div>
+                <div class="code-block" style="margin-top: 24px;">
+    <pre><span class="comment"># Contact me</span>
+<span class="prompt">echo "Ready for cooperation!"</span>
+<span class="prompt">curl -s https://t.me/INeBwa</span>
+<span class="cursor"></span></pre>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ============================== UKRAINIAN CONTENT ============================== -->
+        <div id="content-uk" style="display: none;">
+            <section class="hero" id="uk-top">
+                <pre class="neofetch-logo">
+    ╔══════════════════╗      nebwa@portfolio
+    ║                  ║      ─────────────────
+    ║   ░▒▓█ C++ █▓▒░  ║      OS:      C++20 / Kotlin / Python
+    ║                  ║      Host:    Мінськ, Білорусь
+    ║   ╔══╗    ╔══╗   ║      Kernel:  Linux
+    ║   ║  ║    ║  ║   ║      Shell:   bash
+    ║   ╚══╝    ╚══╝   ║      IDE:     VSCode/CLion/IntelliJ
+    ║                  ║      Backend: FastAPI · Spring Boot
+    ╚══════════════════╝      GitHub:  github.com/MrNeBwa
+                </pre>
+                <div class="hero-info">
+                    <h1>Юрій Тимошенко</h1>
+                    <div class="role">C++ / Kotlin / Python Developer<span class="cursor"></span></div>
+                    <div class="status">Відкритий до пропозицій</div>
+                    <div class="location">📍 Мінськ · remote / hybrid</div>
+                    <div class="hero-buttons">
+                        <!-- Removed Download CV button per instructions -->
+                        <a href="#uk-contact" class="btn" onclick="scrollToTarget('contact')">✉ Зв'язатися</a>
+                        <a href="https://github.com/MrNeBwa" target="_blank" class="btn">⎇ GitHub</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="uk-about">
+                <div class="section-header"><span class="section-number">01 //</span><h2 class="section-title">Про мене</h2></div>
+                <p class="section-subtitle">cat ~/about.txt</p>
+
+                <div class="about-text">
+                    <p><span class="comment">// Студент БДУІР, спеціалізація — backend та системне програмування</span></p>
+                    <p>Привіт! Мене звати Юрій, мені 18 років. Навчаюся на факультеті комп'ютерних систем і мереж у БДУІР за спеціальністю «Програмна інженерія» і паралельно працюю над backend- та системними проєктами.</p>
+                    <p>Основний стек — C++17/20 для високопродуктивних завдань, Kotlin для backend-сервісів та Python з FastAPI для REST API. Люблю розбиратися, як усе влаштовано під капотом — від алокацій до кеш-ліній.</p>
+                    <p>Ціную продуктивність, чисту архітектуру та модульність. Маю широкий технічний кругозір і знаю кілька мов програмування, що допомагає знаходити оптимальні рішення для різних завдань.</p>
+                </div>
+
+                <div class="code-block">
+    <pre><span class="comment">// whoami.cpp</span>
+<span class="keyword">struct</span> <span class="type">Engineer</span> {
+    std::string_view  name   = <span class="string">"Yuriy Timoshenko"</span>;
+    std::size_t       age    = <span class="number">18</span>;
+    std::string_view  role   = <span class="string">"C++ / Kotlin / Python Developer"</span>;
+    std::string_view  city   = <span class="string">"Minsk"</span>;
+    std::string_view  uni    = <span class="string">"BSUIR, FCSN"</span>;
+    bool              remote = <span class="keyword">true</span>;
+    std::string       focus  = <span class="string">"performance & clean code"</span>;
+};</pre>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value">2+</div><div class="stat-label">роки в розробці</div></div>
+                    <div class="stat-card"><div class="stat-value">C2</div><div class="stat-label">English</div></div>
+                    <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">мови у стеку</div></div>
+                </div>
+            </section>
+
+            <section class="section" id="uk-skills">
+                <div class="section-header"><span class="section-number">02 //</span><h2 class="section-title">Навички</h2></div>
+                <p class="section-subtitle">ls ~/skills/</p>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>▸ Мови</h3>
+                        <div class="skill-tags"><span class="skill-tag">C++17</span><span class="skill-tag">C++20</span><span class="skill-tag">Kotlin</span><span class="skill-tag">Python</span><span class="skill-tag">Bash</span><span class="skill-tag">SQL</span><span class="skill-tag">C</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Backend & API</h3>
+                        <div class="skill-tags"><span class="skill-tag">FastAPI</span><span class="skill-tag">Spring Boot</span><span class="skill-tag">Ktor</span><span class="skill-tag">Pydantic</span><span class="skill-tag">SQLAlchemy</span><span class="skill-tag">REST</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Графіка & API</h3>
+                        <div class="skill-tags"><span class="skill-tag">OpenGL</span><span class="skill-tag">GLFW</span><span class="skill-tag">GLAD</span><span class="skill-tag">Unity</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Бази даних</h3>
+                        <div class="skill-tags"><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Redis</span><span class="skill-tag">SQLite</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Інструменти</h3>
+                        <div class="skill-tags"><span class="skill-tag">CMake</span><span class="skill-tag">Git</span><span class="skill-tag">Docker</span><span class="skill-tag">Podman</span><span class="skill-tag">GCC</span><span class="skill-tag">GDB</span><span class="skill-tag">GitHub Actions</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Платформи</h3>
+                        <div class="skill-tags"><span class="skill-tag">Linux</span><span class="skill-tag">Windows</span><span class="skill-tag">VS Code</span><span class="skill-tag">CLion</span><span class="skill-tag">IntelliJ IDEA</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Концепції</h3>
+                        <div class="skill-tags"><span class="skill-tag">ООП</span><span class="skill-tag">RAII</span><span class="skill-tag">STL</span><span class="skill-tag">Coroutines</span><span class="skill-tag">Алгоритми</span><span class="skill-tag">Структури даних</span></div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>▸ Мови спілкування</h3>
+                        <div class="skill-tags"><span class="skill-tag">Російська (рідна)</span><span class="skill-tag">English (C2)</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="uk-experience">
+                <div class="section-header"><span class="section-number">03 //</span><h2 class="section-title">Досвід</h2></div>
+                <p class="section-subtitle">cat ~/work_history.log</p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div><div class="timeline-title">Kotlin / Python (FastAPI) Developer</div><div class="timeline-company">Freelance</div></div>
+                            <div class="timeline-date">Березень 2025 — теперішній час</div>
+                        </div>
+                        <p class="timeline-description">Розробка backend-сервісів та REST API для пет-проєктів і замовних завдань. Основний стек — Kotlin (Spring Boot / Ktor) та Python (FastAPI).</p>
+                        <ul class="timeline-achievements">
+                            <li>Проєктую REST API на FastAPI з асинхронною обробкою запитів, валідацією через Pydantic та автодокументацією через Swagger/OpenAPI.</li>
+                            <li>Пишу backend-модулі на Kotlin з використанням корутин та Spring Boot для мікросервісної архітектури.</li>
+                            <li>Працюю з PostgreSQL та Redis, налаштовую міграції через Alembic / Flyway.</li>
+                            <li>Покриття тестами через pytest та JUnit5, інтеграція тестів у CI через GitHub Actions.</li>
+                            <li>Контейнеризація сервісів у Docker, деплой через docker-compose на VPS.</li>
+                        </ul>
+                        <div class="project-tech"><span>Kotlin</span><span>Spring Boot</span><span>Ktor</span><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span></div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <div><div class="timeline-title">C++ Developer</div><div class="timeline-company">Freelance · github.com</div></div>
+                            <div class="timeline-date">Вересень 2024 — теперішній час</div>
+                        </div>
+                        <p class="timeline-description">Розробка високопродуктивних застосунків на C++17/20 з нуля, з акцентом на модульність, продуктивність та графіку.</p>
+                        <ul class="timeline-achievements">
+                            <li>Спроєктував архітектуру системи на C++17/20, забезпечивши високу продуктивність та модульність коду.</li>
+                            <li>Інтегрував графічні API (OpenGL, GLAD, GLFW) для візуалізації даних і рендерингу об'єктів.</li>
+                            <li>Оптимізував керування пам'яттю за допомогою RAII та розумних вказівників — виключив витоки пам'яті.</li>
+                            <li>Реалізував і профілював алгоритми сортування для швидкої побудови маршрутів.</li>
+                            <li>Налаштував збірку через CMake та контроль версій у Git/GitHub.</li>
+                        </ul>
+                        <div class="project-tech"><span>C++17/20</span><span>OpenGL</span><span>GLFW</span><span>CMake</span><span>Git</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="uk-projects">
+                <div class="section-header"><span class="section-number">04 //</span><h2 class="section-title">Проєкти</h2></div>
+                <p class="section-subtitle">ls ~/projects/</p>
+                
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">🚌 Система планування міських пасажирських перевезень</a></div>
+                    <p class="timeline-description">Пет-проєкт: система для візуалізації та планування маршрутів міського транспорту з акцентом на продуктивність і графіку.</p>
+                    <ul class="timeline-achievements">
+                        <li>Динамічне оновлення сцен транспортних потоків у реальному часі.</li>
+                        <li>Рендеринг об'єктів та візуалізація маршрутів через OpenGL.</li>
+                        <li>Оптимізовані структури даних для швидкої побудови графів.</li>
+                        <li>Виключені витоки пам'яті завдяки RAII та розумним вказівникам.</li>
+                    </ul>
+                    <div class="project-tech"><span>C++20</span><span>OpenGL</span><span>GLFW</span><span>GLAD</span><span>STL</span><span>CMake</span></div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">🔧 REST API сервіси (Kotlin / FastAPI)</a></div>
+                    <p class="timeline-description">Backend-сервіси з авторизацією (JWT), валідацією вхідних даних, кешуванням у Redis та контейнеризацією.</p>
+                    <ul class="timeline-achievements">
+                        <li>Асинхронна обробка запитів на FastAPI.</li>
+                        <li>Мікросервіси на Kotlin + Spring Boot з корутинами.</li>
+                        <li>CI/CD через GitHub Actions, деплой у Docker.</li>
+                    </ul>
+                    <div class="project-tech"><span>Python</span><span>FastAPI</span><span>Kotlin</span><span>Spring Boot</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span></div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-name"><a href="https://github.com/MrNeBwa" target="_blank">⎇ Інші проєкти на GitHub</a></div>
+                    <p class="timeline-description">Різні навчальні та експериментальні проєкти: алгоритми, структури даних, робота із системним програмуванням на Linux.</p>
+                    <div class="project-tech"><span>C++</span><span>Python</span><span>Kotlin</span><span>Linux</span><span>Bash</span></div>
+                </div>
+            </section>
+
+            <section class="section" id="uk-education">
+                <div class="section-header"><span class="section-number">05 //</span><h2 class="section-title">Освіта</h2></div>
+                <p class="section-subtitle">cat ~/education.txt</p>
+                <div class="education-card">
+                    <h3>Білоруський державний університет інформатики та радіоелектроніки (БДУІР)</h3>
+                    <div class="faculty">Факультет комп'ютерних систем і мереж (ФКСМ) — Програмна інженерія</div>
+                    <div class="year">2025 — 2029 (очікується)</div>
+                    <span class="status-badge">Незакінчена вища</span>
+                    <p class="timeline-description" style="margin-top: 12px;">Паралельно з навчанням поглиблено вивчаю C++, сучасні стандарти мови та best practices у системному та backend-програмуванні.</p>
+                </div>
+            </section>
+
+            <section class="section" id="uk-contact">
+                <div class="section-header"><span class="section-number">06 //</span><h2 class="section-title">Контакти</h2></div>
+                <p class="section-subtitle">cat ~/contacts.vcf</p>
+                <div class="contact-grid">
+                    <a href="https://t.me/INeBwa" target="_blank" class="contact-item">
+                        <div class="contact-icon">✈</div>
+                        <div><div class="contact-label">Telegram (бажано)</div><div class="contact-value">@INeBwa</div></div>
+                    </a>
+                    <a href="tel:+375295551017" class="contact-item">
+                        <div class="contact-icon">☎</div>
+                        <div><div class="contact-label">Телефон</div><div class="contact-value">+375 (29) 555-10-17</div></div>
+                    </a>
+                    <a href="mailto:nebwa.work@gmail.com" class="contact-item">
+                        <div class="contact-icon">✉</div>
+                        <div><div class="contact-label">Email</div><div class="contact-value">nebwa.work@gmail.com</div></div>
+                    </a>
+                    <a href="https://github.com/MrNeBwa" target="_blank" class="contact-item">
+                        <div class="contact-icon">⎇</div>
+                        <div><div class="contact-label">GitHub</div><div class="contact-value">github.com/MrNeBwa</div></div>
+                    </a>
+                </div>
+                <div class="code-block" style="margin-top: 24px;">
+    <pre><span class="comment"># Зв'язатися зі мною</span>
+<span class="prompt">echo "Готовий до співпраці!"</span>
+<span class="prompt">curl -s https://t.me/INeBwa</span>
+<span class="cursor"></span></pre>
+                </div>
+            </section>
+        </div>
+
     </main>
 
+    <!-- Modal (Оставлен только для RU версии через вызов) -->
     <div class="modal-overlay" id="cvModal">
         <div class="modal">
             <div class="modal-header">
@@ -792,22 +1131,69 @@
             <div class="modal-body">
                 <a href="Тимошенко%20Юрий%20Сергеевич-с++.pdf" download class="cv-option">
                     <div class="cv-option-title">📕 Оригинал PDF</div>
-                    <div class="cv-option-desc">Файл «Тимошенко Юрий Сергеевич.pdf» из корневой папки.</div>
-                </a>
-                <a href="Тимошенко Юрий Сергеевич-linkedin.pdf" download class="cv-option">
-                    <div class="cv-option-title">📕 LinkedIn резюме</div>
-                    <div class="cv-option-desc">Резюме с сайта LinkedIn </div>
+                    <div class="cv-option-desc">Файл «Тимошенко Юрий Сергеевич-10.pdf» из корневой папки.</div>
                 </a>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>© 2026 Юрий Тимошенко · Сделано с ❤ и std::cout</p>
-        <p style="margin-top: 4px;">yuriy@portfolio:~$ <span style="color: var(--green);">exit 0</span></p>
+        <p id="footer-text">© 2026 Юрий Тимошенко · Сделано с ❤ и std::cout</p>
+        <p style="margin-top: 4px;">nebwa@portfolio:~$ <span style="color: var(--green);">exit 0</span></p>
     </footer>
 
     <script>
+        // Language Logic
+        const langs = ['ru', 'en', 'uk'];
+        
+        function setLanguage(lang) {
+            localStorage.setItem('cv_lang', lang);
+
+            // Toggle active classes on buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Show/Hide content
+            document.getElementById('content-ru').style.display = lang === 'ru' ? 'block' : 'none';
+            document.getElementById('content-en').style.display = lang === 'en' ? 'block' : 'none';
+            document.getElementById('content-uk').style.display = lang === 'uk' ? 'block' : 'none';
+
+            // Update title and footer text
+            if (lang === 'en') {
+                document.title = "Yuriy Timoshenko — C++ / Kotlin / Python Developer";
+                document.getElementById('footer-text').innerText = "© 2026 Yuriy Timoshenko · Made with ❤ and std::cout";
+            } else if (lang === 'uk') {
+                document.title = "Юрій Тимошенко — C++ / Kotlin / Python Developer";
+                document.getElementById('footer-text').innerText = "© 2026 Юрій Тимошенко · Зроблено з ❤ та std::cout";
+            } else {
+                document.title = "Юрий Тимошенко — C++ / Kotlin / Python разработчик";
+                document.getElementById('footer-text').innerText = "© 2026 Юрий Тимошенко · Сделано с ❤ и std::cout";
+            }
+
+            // Scroll calculation re-trigger
+            window.dispatchEvent(new Event('scroll'));
+        }
+
+        function initLanguage() {
+            let savedLang = localStorage.getItem('cv_lang');
+            if (savedLang && langs.includes(savedLang)) {
+                setLanguage(savedLang);
+            } else {
+                // Auto-detect from browser
+                const browserLang = navigator.language.slice(0, 2).toLowerCase();
+                if (browserLang === 'uk') {
+                    setLanguage('uk');
+                } else if (browserLang === 'ru') {
+                    setLanguage('ru');
+                } else {
+                    setLanguage('en'); 
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initLanguage);
+
         function toggleMenu() {
             document.getElementById('terminalNav').classList.toggle('open');
         }
@@ -824,27 +1210,48 @@
             if (e.key === 'Escape') closeCVModal();
         });
 
-        const sections = document.querySelectorAll('.section, .hero');
-        const navLinks = document.querySelectorAll('.nav-link');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
-                if (window.scrollY >= sectionTop) {
-                    current = section.getAttribute('id');
-                }
-            });
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
-                }
+        // Custom smooth scroll navigation
+        function scrollToTarget(targetName) {
+            const currentLang = localStorage.getItem('cv_lang') || 'ru';
+            const targetElement = document.getElementById(`${currentLang}-${targetName}`);
+            if (targetElement) {
+                const yOffset = -80; // account for fixed header
+                const y = targetElement.getBoundingClientRect().top + window.scrollY + yOffset;
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+            document.getElementById('terminalNav').classList.remove('open');
+        }
+
+        // Attach click events to nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetName = this.getAttribute('data-target');
+                scrollToTarget(targetName);
             });
         });
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('terminalNav').classList.remove('open');
+        // Dynamic scrollspy for the current language
+        window.addEventListener('scroll', () => {
+            let currentLang = localStorage.getItem('cv_lang') || 'ru';
+            let currentId = '';
+            
+            const activeSections = document.querySelectorAll(`#content-${currentLang} .section, #content-${currentLang} .hero`);
+            
+            activeSections.forEach(section => {
+                const sectionTop = section.offsetTop - 120;
+                if (window.scrollY >= sectionTop) {
+                    // Extract pure section name (e.g. "ru-about" -> "about")
+                    currentId = section.getAttribute('id').replace(`${currentLang}-`, '');
+                }
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                // The hero section sets 'top', which has no matching nav-link, that's fine
+                if (link.getAttribute('data-target') === currentId) {
+                    link.classList.add('active');
+                }
             });
         });
 
