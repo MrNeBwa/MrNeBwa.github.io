@@ -653,7 +653,7 @@
 
                 <div class="education-card">
                     <h3>Белорусский государственный университет информатики и радиоэлектроники (БГУИР)</h3>
-                    <div class="faculty">Факультет компьютерных систем и сетей (ФКП) — Программная инженерия</div>
+                    <div class="faculty">Факультет компьютерного проектирования (ФКП) — Программная инженерия</div>
                     <div class="year">2025 — 2029 (ожидается)</div>
                     <span class="status-badge">Неоконченное высшее</span>
                     <p class="timeline-description" style="margin-top: 12px;">Параллельно с учёбой углублённо изучаю C++, современные стандарты языка и best practices в системном и backend-программировании.</p>
@@ -716,7 +716,7 @@
                     <div class="status">Open to opportunities</div>
                     <div class="location">📍 Minsk · remote / hybrid</div>
                     <div class="hero-buttons">
-                        <!-- Removed Download CV button per instructions -->
+                        <button class="btn btn-primary" onclick="openCVModal()">⬇ Download CV</button>
                         <a href="#en-contact" class="btn" onclick="scrollToTarget('contact')">✉ Contact</a>
                         <a href="https://github.com/MrNeBwa" target="_blank" class="btn">⎇ GitHub</a>
                     </div>
@@ -729,7 +729,7 @@
 
                 <div class="about-text">
                     <p><span class="comment">// BSUIR student, specializing in backend and systems programming</span></p>
-                    <p>Hi! My name is Yuriy, I'm 18. I study at the Faculty of Computer Systems and Networks at BSUIR, majoring in Software Engineering, and work on backend and system projects on the side.</p>
+                    <p>Hi! My name is Yuriy, I'm 18. I study at the BSUIR, majoring in Software Engineering, and work on backend and system projects on the side.</p>
                     <p>Core stack — C++17/20 for high-performance tasks, Kotlin for backend services, and Python with FastAPI for REST APIs. I love figuring out how things work under the hood — from allocations to cache lines.</p>
                     <p>I value performance, clean architecture, and modularity. I have a broad technical background and know several programming languages, which helps me find optimal solutions for various tasks.</p>
                 </div>
@@ -741,7 +741,7 @@
     std::size_t       age    = <span class="number">18</span>;
     std::string_view  role   = <span class="string">"C++ / Kotlin / Python Developer"</span>;
     std::string_view  city   = <span class="string">"Minsk"</span>;
-    std::string_view  uni    = <span class="string">"BSUIR, FCSN"</span>;
+    std::string_view  uni    = <span class="string">"BSUIR, FCP"</span>;
     bool              remote = <span class="keyword">true</span>;
     std::string       focus  = <span class="string">"performance & clean code"</span>;
 };</pre>
@@ -1121,18 +1121,42 @@
 
     </main>
 
-    <!-- Modal (Оставлен только для RU версии через вызов) -->
+    <!-- Modal -->
     <div class="modal-overlay" id="cvModal">
         <div class="modal">
             <div class="modal-header">
-                <h3>⬇ Выберите версию CV</h3>
+                <h3 id="modalTitle">⬇ Выберите версию CV</h3>
                 <button class="modal-close" onclick="closeCVModal()">×</button>
             </div>
             <div class="modal-body">
-                <a href="Тимошенко%20Юрий%20Сергеевич-с++.pdf" download class="cv-option">
-                    <div class="cv-option-title">📕 Оригинал PDF</div>
-                    <div class="cv-option-desc">Файл «Тимошенко Юрий Сергеевич-10.pdf» из корневой папки.</div>
-                </a>
+                
+                <!-- РУССКИЕ РЕЗЮМЕ -->
+                <div id="cv-options-ru">
+                    <a href="Тимошенко%20Юрий%20Сергеевич-с++.pdf" download class="cv-option">
+                        <div class="cv-option-title">📕 C++ / Backend Developer</div>
+                        <div class="cv-option-desc">Основное резюме (PDF)</div>
+                    </a>
+                    <!-- Сюда потом можно добавить другие резюме на русском -->
+                </div>
+
+                <!-- АНГЛИЙСКИЕ РЕЗЮМЕ -->
+                <div id="cv-options-en" style="display: none;">
+                    <a href="resume_en.pdf" download class="cv-option">
+                        <div class="cv-option-title">📕 C++ / Backend Developer</div>
+                        <div class="cv-option-desc">Main resume (PDF)</div>
+                    </a>
+                    <!-- Сюда потом можно добавить другие резюме на английском -->
+                </div>
+
+                <!-- УКРАИНСКИЕ РЕЗЮМЕ -->
+                <div id="cv-options-uk" style="display: none;">
+                    <a href="resume_uk.pdf" download class="cv-option">
+                        <div class="cv-option-title">📕 C++ / Backend Developer</div>
+                        <div class="cv-option-desc">Основне резюме (PDF)</div>
+                    </a>
+                    <!-- Сюда потом можно добавить другие резюме на украинском -->
+                </div>
+
             </div>
         </div>
     </div>
@@ -1154,21 +1178,30 @@
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
 
-            // Show/Hide content
+            // Show/Hide main content
             document.getElementById('content-ru').style.display = lang === 'ru' ? 'block' : 'none';
             document.getElementById('content-en').style.display = lang === 'en' ? 'block' : 'none';
             document.getElementById('content-uk').style.display = lang === 'uk' ? 'block' : 'none';
 
-            // Update title and footer text
+            // Show/Hide modal content
+            document.getElementById('cv-options-ru').style.display = lang === 'ru' ? 'block' : 'none';
+            document.getElementById('cv-options-en').style.display = lang === 'en' ? 'block' : 'none';
+            document.getElementById('cv-options-uk').style.display = lang === 'uk' ? 'block' : 'none';
+
+            // Update title, footer text, and modal header
+            const modalTitle = document.getElementById('modalTitle');
             if (lang === 'en') {
                 document.title = "Yuriy Timoshenko — C++ / Kotlin / Python Developer";
                 document.getElementById('footer-text').innerText = "© 2026 Yuriy Timoshenko · Made with ❤ and std::cout";
+                modalTitle.innerText = "⬇ Choose CV version";
             } else if (lang === 'uk') {
                 document.title = "Юрій Тимошенко — C++ / Kotlin / Python Developer";
                 document.getElementById('footer-text').innerText = "© 2026 Юрій Тимошенко · Зроблено з ❤ та std::cout";
+                modalTitle.innerText = "⬇ Оберіть версію CV";
             } else {
                 document.title = "Юрий Тимошенко — C++ / Kotlin / Python разработчик";
                 document.getElementById('footer-text').innerText = "© 2026 Юрий Тимошенко · Сделано с ❤ и std::cout";
+                modalTitle.innerText = "⬇ Выберите версию CV";
             }
 
             // Scroll calculation re-trigger
@@ -1180,7 +1213,6 @@
             if (savedLang && langs.includes(savedLang)) {
                 setLanguage(savedLang);
             } else {
-                // Auto-detect from browser
                 const browserLang = navigator.language.slice(0, 2).toLowerCase();
                 if (browserLang === 'uk') {
                     setLanguage('uk');
@@ -1209,8 +1241,6 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeCVModal();
         });
-
-        // Custom smooth scroll navigation
         function scrollToTarget(targetName) {
             const currentLang = localStorage.getItem('cv_lang') || 'ru';
             const targetElement = document.getElementById(`${currentLang}-${targetName}`);
