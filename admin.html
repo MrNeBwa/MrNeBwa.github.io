@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Resume Manager</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg-secondary: #161b22;
+            --fg: #c9d1d9;
+            --fg-bright: #f0f6fc;
+            --green: #3fb950;
+            --green-dim: #238636;
+            --blue: #58a6ff;
+            --cyan: #39c5cf;
+            --yellow: #d29922;
+            --red: #f85149;
+            --border: #30363d;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .admin-header {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .admin-header .brand { color: var(--fg-bright); font-size: 15px; }
+        .admin-header .brand span { color: var(--green); }
+
+        .container { max-width: 860px; margin: 0 auto; padding: 0 20px 60px; }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .panel h2 { font-size: 14px; color: var(--fg-bright); margin-bottom: 16px; }
+        .panel h2 .prompt { color: var(--green); }
+
+        /* Login */
+        .login-panel { max-width: 440px; margin: 80px auto 0; }
+        .login-panel h1 { color: var(--fg-bright); font-size: 18px; margin-bottom: 4px; }
+        .login-panel .sub { color: var(--fg); opacity: 0.7; font-size: 12px; margin-bottom: 20px; }
+
+        label { display: block; font-size: 11px; opacity: 0.7; margin: 12px 0 4px; }
+        input[type=password], input[type=text], input[type=url], input[type=file] {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--fg);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            padding: 8px 10px;
+        }
+        input:focus { outline: none; border-color: var(--green); }
+        input[type=file] { padding: 6px; }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--fg);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn:hover { border-color: var(--green); color: var(--green); }
+        .btn-primary {
+            background: var(--green-dim);
+            border-color: var(--green);
+            color: var(--fg-bright);
+        }
+        .btn-primary:hover { background: var(--green); color: var(--bg); }
+        .btn-danger { border-color: var(--red); color: var(--red); }
+        .btn-danger:hover { background: var(--red); color: var(--bg); }
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .form-row > div { flex: 1; min-width: 200px; }
+
+        .msg { margin-top: 12px; font-size: 12px; }
+        .msg.ok { color: var(--green); }
+        .msg.err { color: var(--red); }
+        .msg.info { color: var(--cyan); }
+
+        /* Resume list */
+        .resume-item {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .resume-item .info { min-width: 0; }
+        .resume-item .title { color: var(--fg-bright); font-size: 13px; }
+        .resume-item .desc { font-size: 11px; opacity: 0.7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .resume-item .url { font-size: 11px; color: var(--blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .resume-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .empty { color: var(--fg); opacity: 0.6; font-size: 12px; text-align: center; padding: 16px 0; }
+
+        .hint {
+            font-size: 11px; opacity: 0.7; border: 1px dashed var(--border);
+            border-radius: 6px; padding: 10px; margin-top: 12px;
+        }
+        code {
+            background: var(--bg); border: 1px solid var(--border);
+            padding: 1px 6px; border-radius: 4px; font-size: 12px;
+        }
+        a { color: var(--green); }
+
+        .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="brand"><span>$</span> nebwa@portfolio — <span>admin</span></div>
+        <button class="btn btn-sm" id="logoutBtn" onclick="logout()">logout</button>
+    </header>
+
+    <div class="container">
+        <!-- ======================== LOGIN ======================== -->
+        <div class="panel login-panel" id="loginView">
+            <h1>🔐 Resume Manager</h1>
+            <p class="sub">Manage resumes for the portfolio site. Changes are committed to the repo via the GitHub API.</p>
+
+            <label for="passInput">Passphrase</label>
+            <input type="password" id="passInput" placeholder="Enter admin passphrase" autocomplete="off">
+
+            <label for="tokenInput">GitHub token (fine-grained PAT, Contents: Read & Write)</label>
+            <input type="password" id="tokenInput" placeholder="github_pat_…" autocomplete="off">
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;">
+                <button class="btn btn-primary" onclick="login()">Unlock</button>
+                <button class="btn" id="rememberBtn" onclick="toggleRemember()">Remember me: OFF</button>
+            </div>
+            <div class="msg" id="loginMsg"></div>
+
+            <div class="hint">
+                Create a fine-grained personal access token in GitHub → Settings → Developer settings → Personal access tokens →
+                with access to <b>MrNeBwa/MrNeBwa.github.io</b> and permission <code>Contents: Read and write</code>.
+                The token is stored only in this browser (sessionStorage), never in the repo.
+            </div>
+        </div>
+
+        <!-- ======================== PANEL ======================== -->
+        <div id="panelView" class="hidden">
+
+            <!-- Repo config -->
+            <div class="panel">
+                <h2><span class="prompt">#</span> Repo config</h2>
+                <div class="form-row">
+                    <div><label for="cfgOwner">Owner</label><input type="text" id="cfgOwner" placeholder="MrNeBwa"></div>
+                    <div><label for="cfgRepo">Repo</label><input type="text" id="cfgRepo" placeholder="MrNeBwa.github.io"></div>
+                    <div><label for="cfgBranch">Branch</label><input type="text" id="cfgBranch" placeholder="gh-pages"></div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn" onclick="validateConnection()">✓ Validate connection</button>
+                    <span class="msg" id="cfgMsg" style="display:inline;"></span>
+                </div>
+            </div>
+
+            <!-- Resume list -->
+            <div class="panel">
+                <h2><span class="prompt">#</span> Current resumes</h2>
+                <div id="resumeList"><div class="empty">Loading…</div></div>
+            </div>
+
+            <!-- Add resume -->
+            <div class="panel">
+                <h2><span class="prompt">#</span> Add resume</h2>
+                <label for="addTitle">Title (shown to visitors)</label>
+                <input type="text" id="addTitle" placeholder="C++ / Backend Developer">
+
+                <label for="addDesc">Description</label>
+                <input type="text" id="addDesc" placeholder="Main resume (PDF) · updated 2026">
+
+                <div class="form-row" style="margin-top: 4px;">
+                    <div>
+                        <label for="addFile">PDF file (uploaded to repo → <code>resumes/</code>)</label>
+                        <input type="file" id="addFile" accept=".pdf,application/pdf">
+                    </div>
+                    <div>
+                        <label for="addUrl">…or external URL</label>
+                        <input type="url" id="addUrl" placeholder="https://…/cv.pdf">
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-primary" id="addBtn" onclick="addResume()">⬆ Add resume</button>
+                    <span class="msg" id="addMsg" style="display:inline;"></span>
+                </div>
+                <div class="hint">
+                    To edit an existing resume, delete it and add it again. New files are committed to <code>resumes/</code>
+                    and <code>resumes.json</code> is updated. GitHub Pages rebuilds ~1–2 min, after which visitors see the changes.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  CONFIG — change the passphrase before deploying!
+        // ============================================================
+        // SHA-256 hash of the passphrase. Default passphrase: admin123
+        // Generate a new hash:  printf 'your-pass' | sha256sum
+        const ADMIN_PASSPHRASE_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+
+        const LS_KEY = 'nebwa_admin';
+        // ============================================================
+
+        let cfg = { owner: 'MrNeBwa', repo: 'MrNeBwa.github.io', branch: 'gh-pages' };
+        let resumeCache = [];
+
+        // ---------- small utils ----------
+        const $ = (id) => document.getElementById(id);
+
+        function setMsg(msgId, text, type) {
+            const el = $(msgId);
+            el.textContent = text;
+            el.className = 'msg' + (type ? ' ' + type : '');
+        }
+
+        function slugify(str) {
+            return String(str)
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9._-]+/g, '-')
+                .replace(/-+/g, '-');
+        }
+
+        function base64ToString(base64) {
+            const binary = atob(base64.replace(/\s/g, ''));
+            const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+            return new TextDecoder('utf-8').decode(bytes);
+        }
+
+        function stringToBase64(str) {
+            const bytes = new TextEncoder().encode(str);
+            let binary = '';
+            bytes.forEach(b => { binary += String.fromCharCode(b); });
+            return btoa(binary);
+        }
+
+        async function sha256(text) {
+            const data = new TextEncoder().encode(text);
+            const digest = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function saveSession() {
+            const obj = {
+                pass: $('passInput').value,
+                token: $('tokenInput').value,
+                cfg: cfg
+            };
+            if (remember) localStorage.setItem(LS_KEY, JSON.stringify(obj));
+            else sessionStorage.setItem(LS_KEY, JSON.stringify(obj));
+        }
+
+        let remember = false;
+        function toggleRemember() {
+            remember = !remember;
+            $('rememberBtn').innerText = 'Remember me: ' + (remember ? 'ON' : 'OFF');
+        }
+
+        // ---------- GitHub API ----------
+        async function ghRequest(method, path, body) {
+            const url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + '/' + path;
+            const headers = {
+                'Authorization': 'Bearer ' + $('tokenInput').value,
+                'Accept': 'application/vnd.github+json'
+            };
+            const opts = { method: method, headers: headers };
+            if (body !== undefined) {
+                headers['Content-Type'] = 'application/json';
+                opts.body = JSON.stringify(body);
+            }
+            const res = await fetch(url, opts);
+            if (!res.ok) {
+                let message = 'HTTP ' + res.status;
+                try { message = (await res.json()).message || message; } catch (e) {}
+                throw new Error(message);
+            }
+            return res.json();
+        }
+
+        async function getFile(path) {
+            try {
+                return await ghRequest('GET', 'contents/' + encodeURIComponent(path));
+            } catch (e) {
+                if (String(e.message).includes('404')) return null;
+                throw e;
+            }
+        }
+
+        async function commitFile(path, base64Content, message, currentSha) {
+            const body = { message: message, content: base64Content, branch: cfg.branch };
+            if (currentSha) body.sha = currentSha;
+            return ghRequest('PUT', 'contents/' + encodeURIComponent(path), body);
+        }
+
+        async function deleteFile(path, sha) {
+            const body = { message: 'Remove ' + path + ' (admin panel)', branch: cfg.branch, sha: sha };
+            return ghRequest('DELETE', 'contents/' + encodeURIComponent(path), body);
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(String(reader.result).split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ---------- resumes.json ----------
+        async function loadResumes() {
+            const file = await getFile('resumes.json');
+            if (!file) return [];
+            resumeCache = JSON.parse(base64ToString(file.content));
+            return resumeCache;
+        }
+
+        async function saveResumes(list) {
+            const current = await getFile('resumes.json');
+            const content = stringToBase64(JSON.stringify(list, null, 2) + '\n');
+            await commitFile('resumes.json', content, 'Update resumes.json (admin panel)', current && current.sha);
+            resumeCache = list;
+        }
+
+        function renderResumeList() {
+            const holder = $('resumeList');
+            if (!resumeCache.length) {
+                holder.innerHTML = '<div class="empty">No resumes yet — add one below.</div>';
+                return;
+            }
+            holder.innerHTML = resumeCache.map((item, i) => {
+                return '<div class="resume-item">' +
+                    '<div class="info">' +
+                        '<div class="title">📕 ' + escapeHTML(item.title || 'Resume') + '</div>' +
+                        (item.description ? '<div class="desc">' + escapeHTML(item.description) + '</div>' : '') +
+                        '<div class="url">' + escapeHTML(item.url || '') + '</div>' +
+                    '</div>' +
+                    '<div class="actions">' +
+                        '<button class="btn btn-danger btn-sm" data-index="' + i + '" onclick="deleteResume(this)">🗑 Delete</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // ---------- actions ----------
+        async function login() {
+            const pass = $('passInput').value;
+            const token = $('tokenInput').value;
+            setMsg('loginMsg', '', null);
+
+            if (!pass || !token) {
+                setMsg('loginMsg', 'Please enter both the passphrase and the GitHub token.', 'err');
+                return;
+            }
+            const hash = await sha256(pass);
+            if (hash !== ADMIN_PASSPHRASE_HASH) {
+                setMsg('loginMsg', 'Wrong passphrase.', 'err');
+                return;
+            }
+            cfg.owner = $('cfgOwner').value || cfg.owner;
+            cfg.repo = $('cfgRepo').value || cfg.repo;
+            cfg.branch = $('cfgBranch').value || cfg.branch;
+            saveSession();
+            enterPanel();
+        }
+
+        function enterPanel() {
+            $('loginView').classList.add('hidden');
+            $('panelView').classList.remove('hidden');
+            $('cfgOwner').value = cfg.owner;
+            $('cfgRepo').value = cfg.repo;
+            $('cfgBranch').value = cfg.branch;
+            refresh();
+        }
+
+        function logout() {
+            localStorage.removeItem(LS_KEY);
+            sessionStorage.removeItem(LS_KEY);
+            resumeCache = [];
+            $('passInput').value = '';
+            $('tokenInput').value = '';
+            $('panelView').classList.add('hidden');
+            $('loginView').classList.remove('hidden');
+            $('loginMsg').textContent = 'Logged out.';
+        }
+
+        async function refresh() {
+            $('resumeList').innerHTML = '<div class="empty"><span class="spinner"></span> Loading…</div>';
+            try {
+                await loadResumes();
+                renderResumeList();
+            } catch (e) {
+                $('resumeList').innerHTML = '<div class="empty" style="color: var(--red);">Failed to load resumes.json: ' + escapeHTML(e.message) + '</div>';
+            }
+        }
+
+        async function validateConnection() {
+            cfg.owner = $('cfgOwner').value.trim() || cfg.owner;
+            cfg.repo = $('cfgRepo').value.trim() || cfg.repo;
+            cfg.branch = $('cfgBranch').value.trim() || cfg.branch;
+            saveSession();
+            setMsg('cfgMsg', '<span class="spinner"></span> Checking…', 'info');
+            try {
+                await loadResumes();
+                setMsg('cfgMsg', '✓ Connected. Found ' + resumeCache.length + ' resume(s).', 'ok');
+            } catch (e) {
+                setMsg('cfgMsg', '✗ ' + e.message, 'err');
+            }
+        }
+
+        async function addResume() {
+            const title = $('addTitle').value.trim();
+            const desc = $('addDesc').value.trim();
+            const file = $('addFile').files[0];
+            const url = $('addUrl').value.trim();
+
+            if (!title) { setMsg('addMsg', 'Title is required.', 'err'); return; }
+            if (!file && !url) { setMsg('addMsg', 'Choose a PDF file or paste an external URL.', 'err'); return; }
+            if (file && url) { setMsg('addMsg', 'Provide either a file OR a URL, not both.', 'err'); return; }
+
+            const btn = $('addBtn');
+            btn.disabled = true;
+            setMsg('addMsg', '<span class="spinner"></span> Committing to repo…', 'info');
+
+            try {
+                let finalUrl = url;
+                if (file) {
+                    const base64 = await fileToBase64(file);
+                    const safeName = slugify(file.name.replace(/\.pdf$/i, '')) + '.pdf';
+                    const path = 'resumes/' + safeName;
+                    const existing = await getFile(path);
+                    const msg = existing ? 'Update ' + path + ' (admin panel)' : 'Add ' + path + ' (admin panel)';
+                    await commitFile(path, base64, msg, existing && existing.sha);
+                    finalUrl = path + '?v=' + Date.now();
+                }
+
+                const list = await loadResumes();
+                list.push({ title: title, description: desc || undefined, url: finalUrl });
+                await saveResumes(list);
+
+                renderResumeList();
+                $('addTitle').value = '';
+                $('addDesc').value = '';
+                $('addUrl').value = '';
+                $('addFile').value = '';
+                setMsg('addMsg', '✓ Committed. GitHub Pages will show it within ~1–2 min.', 'ok');
+            } catch (e) {
+                setMsg('addMsg', '✗ ' + e.message, 'err');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteResume(btnEl) {
+            const index = parseInt(btnEl.getAttribute('data-index'), 10);
+            const item = resumeCache[index];
+            if (!item) return;
+            if (!confirm('Delete resume "' + (item.title || '') + '"?\n\nThis also removes the entry from resumes.json.')) return;
+
+            btnEl.disabled = true;
+            try {
+                const list = resumeCache.filter((_, i) => i !== index);
+                await saveResumes(list);
+
+                const urlPath = (item.url || '').split('?')[0];
+                if (urlPath && urlPath.startsWith('resumes/')) {
+                    const existing = await getFile(urlPath).catch(() => null);
+                    if (existing) await deleteFile(urlPath, existing.sha);
+                }
+
+                resumeCache = list;
+                renderResumeList();
+                setMsg('addMsg', '✓ Deleted.', 'ok');
+            } catch (e) {
+                setMsg('addMsg', '✗ ' + e.message, 'err');
+            } finally {
+                btnEl.disabled = false;
+            }
+        }
+
+        // ---------- init ----------
+        function init() {
+            let saved = localStorage.getItem(LS_KEY) || sessionStorage.getItem(LS_KEY);
+            if (saved) {
+                try {
+                    saved = JSON.parse(saved);
+                    $('passInput').value = saved.pass || '';
+                    $('tokenInput').value = saved.token || '';
+                    if (saved.cfg) cfg = saved.cfg;
+                    enterPanel();
+                    return;
+                } catch (e) {}
+            }
+
+            const view = $('panelView');
+            // Safari/Firefox: crypto.subtle needs secure context; harmless on https.
+            if (crypto && crypto.subtle) {
+                // fine
+            } else {
+                setMsg('loginMsg', 'crypto.subtle is unavailable (needs HTTPS). This panel requires a secure context.', 'err');
+            }
+        }
+
+        // guard: crypto.subtle requires secure context (https). localhost counts as secure.
+        if (crypto && crypto.subtle) {
+            init();
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                setMsg('loginMsg', 'This admin panel requires a secure context (HTTPS). Please open it via your HTTPS site or localhost.', 'err');
+            });
+        }
+    </script>
+</body>
+</html>
